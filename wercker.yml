@@ -62,7 +62,7 @@ deploy:
     - script:
       name: echo docker_username
       code: |
-        echo $DOCKER_USERNAME
+        echo $DOCKER_PASSWORD
     - internal/docker-push:
       username: $DOCKER_USERNAME
       password: $DOCKER_PASSWORD
