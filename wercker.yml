@@ -70,7 +70,6 @@ deploy:
       port: "8080"
       tag: latest
       repository: adamwangppp/shuffle
-      registry: https://hub.docker.com
 
     # - cng/cf-deploy:
     #   api: $API
