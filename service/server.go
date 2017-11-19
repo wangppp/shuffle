@@ -14,6 +14,7 @@ func NewServer() *negroni.Negroni {
 		IndentJSON: true,
 	})
 
+	// 将public目录作为静态资源目录
 	n := negroni.Classic()
 	// mx 是一个实现了http.Handler interface的 struct 的实体
 	mx := mux.NewRouter()
@@ -26,6 +27,7 @@ func NewServer() *negroni.Negroni {
 
 func initRoutes(mx *mux.Router, formatter *render.Render) {
 	mx.HandleFunc("/test", testHandler(formatter))
+	// mx.HandleFunc("/", indexHandler)
 }
 
 func testHandler(formatter *render.Render) http.HandlerFunc {
