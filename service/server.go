@@ -15,9 +15,11 @@ func NewServer() *negroni.Negroni {
 	})
 
 	n := negroni.Classic()
+	// mx 是一个实现了http.Handler interface的 struct 的实体
 	mx := mux.NewRouter()
 
 	initRoutes(mx, formatter)
+	// 传http.Handler struct
 	n.UseHandler(mx)
 	return n
 }
