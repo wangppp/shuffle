@@ -1,2 +1,3 @@
 /.wercker/
 /frontend/node_modules/
+/db/pgdata

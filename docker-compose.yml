@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+
+  goapp:
+    build:
+      context: ./api
+      args:
+        app_env: ${APP_ENV}
+    volumes:
+      - "./api:/go/src/github.com/wangppp/shuffle/api"
+    ports:
+      - "5000:4000"
+    depends_on:
+      - db
+    links:
+      - db
+  db:
+    build: ./db
+    volumes:
+      - ./db/pgdata:/pgdata
+    ports:
+      - "2345:5432"
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - PGDATA=/pgdata
+
+    

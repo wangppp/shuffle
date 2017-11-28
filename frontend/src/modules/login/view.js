@@ -1,17 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import http from "axios";
+import http from "../../utils/http";
 import { setLogin, loginAsync } from "../home/actions";
+import { setToken } from "../../utils/auth";
 
 const AuthBar = ({ loginAsync}) => {
   return (
-    <form className="login-form" onSubmit={(e) => {
-      e.preventDefault();
-      loginAsync();
-    }}>
-      <input placeholder="请输入邮箱" type="email"/> 
-      <input placeholder="请输入密码" type="password"/>
+    <form className="login-form" onSubmit={loginAsync} id="login-form">
+      <input name="username" placeholder="请输入用户名" type="text"/> 
+      <input name="password" placeholder="请输入密码" type="password"/>
       <button>Login To Continue...</button>
     </form>
   )
@@ -46,15 +44,36 @@ function mapDispatchToProps(dispatch) {
     logoutManual: () => {
       dispatch(setLogin(false));
     },
-    loginAsync: () => {
-      http('http://localhost:4000/product', {
-        headers: {
-          'Authorization': `bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbiI6dHJ1ZSwiZXhwIjoxNTExNTEyNDc3LCJuYW1lIjoiQWRhbSBXYW5nIn0.9MngiL3iORUMafdHqb7reJsZi_zRHfY6ApvmR9xWiN8`
+    loginAsync: (e) => {
+      e.preventDefault();
+      const form = new FormData(document.querySelector("#login-form"));
+      http.post('/login', form).then(
+        response => {
+          const res = response.data;
+          console.log(res)
+          if (res.msg) {
+            alert(res.message);
+          }
+          if (res.status === true) {
+            setToken(res.token)
+            dispatch(setLogin(true))
+          }
+        },
+        err => {
+          // 获取对象的属性名->array
+          // console.log(Object.getOwnPropertyNames(err))
+          try {
+            const res = err.response.data;
+            if (res.msg) {
+              alert(res.msg)
+            }
+          } catch (error) {
+            alert('网络出错')
+          }
         }
-      }).then(response => {
-        console.log(response);
-      }).catch(err => {});
-      dispatch(loginAsync());
+    ).catch(err => {
+          alert('网络出错')
+      });
     }
   }
 }
