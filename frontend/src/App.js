@@ -3,19 +3,25 @@ import {
   BrowserRouter as Router,
   Redirect,
   withRouter,
-  Link,
+  // Link,
   Route
 } from 'react-router-dom';
 import { connect } from "react-redux";
 import { view as Home } from "./modules/home";
 import { view as Login } from "./modules/login";
-import './App.css';
+import { loginRequiredWrapper, RouteWithSubroutes } from './components/loginWapper';
+
 
 const Articles = () => (
   <ul>
     <li>1</li>
     <li>1</li>
     <li>1</li>
+    <Route path="/home/articles/subsub" render={ (props) => (
+      <div>
+        Sub Sub Route!
+      </div>
+    )} />
   </ul>
 );
 
@@ -27,44 +33,50 @@ const Statistics = () => (
   <p>Subscribers statistics...</p>
 );
 
-// 从store里取出登录状态
-const mapStateToProps = (state) => ({
-  islogin: state.home.isLogin
-});
-
-// 将这几个组件通过 login required 进行包装
-// 跳转的时候将当前URL带进state
-const loginRequiredWrapper = (Component) => {
-  return withRouter(connect(mapStateToProps, null)(({islogin, location}) => (
-    islogin ? 
-    <Component /> :
-    // to 传递 location 对象
-    <Redirect to={{
-      pathname: '/login',
-      state: { from:  location}
-    }}  />
-  )))
-}
+const routes = [
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/home',
+    component: loginRequiredWrapper(Home),
+    routes: [
+      {
+        path: '/home/articles',
+        component: loginRequiredWrapper(Articles)
+      },
+      {
+        path: '/home/subscription',
+        component: loginRequiredWrapper(Subscription)
+      },
+      {
+        path: '/home/statistics',
+        component: loginRequiredWrapper(Statistics)
+      },
+    ]
+  }
+]
 
 class App extends Component {
   render() {
     return (
       <Router>
         <div>
-            <Link className="dashboard-link" to="/">Index</Link>
-            <Link className="dashboard-link" to="/articles">Articles</Link>
-            <Link className="dashboard-link" to="/subscription">Subscription</Link>
-            <Link className="dashboard-link" to="/statistics">Statistics</Link>
-            {/* 经过Route包装过的组件，获得了location, history, state 属性 */}
-            <Route path="/login" exact component={Login} />
-            <Route path="/" exact component={loginRequiredWrapper(Home)} />
-            <Route path="/articles" exact component={loginRequiredWrapper(Articles)} />
-            <Route path="/subscription" exact component={loginRequiredWrapper(Subscription)} />
-            <Route path="/statistics" exact component={loginRequiredWrapper(Statistics)} />
+            {
+              routes.map((route, i) => (
+                <RouteWithSubroutes {...route} key={i}/>
+              ))
+            }
         </div>
       </Router>
     );
   }
 }
 
-export default App;
+// 从store里取出登录状态
+const mapStateToProps = (state) => ({
+  islogin: state.home.isLogin
+});
+
+export default connect(mapStateToProps, null)(App);

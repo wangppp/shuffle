@@ -1,24 +1,64 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+
+import {  Form, Grid, Header, Message, Icon } from 'semantic-ui-react';
 import http from "../../utils/http";
-import { setLogin, loginAsync } from "../home/actions";
+// import { setLogin, loginAsync } from "../home/actions";
+import { actions as homeActions } from "../home";
+import { actions as loginActions } from "../login";
 import { setToken } from "../../utils/auth";
 
-const AuthBar = ({ loginAsync}) => {
+const AuthBar = ({ loginAsync, username, password, setUserName, setPassword}) => {
   return (
-    <form className="login-form" onSubmit={loginAsync} id="login-form">
-      <input name="username" placeholder="请输入用户名" type="text"/> 
-      <input name="password" placeholder="请输入密码" type="password"/>
-      <button>Login To Continue...</button>
-    </form>
+    <div className='login-form'>
+      <Grid
+        centered
+        style={{ height: '100%' }}
+        verticalAlign='middle'
+      >
+        <Grid.Column style={{ maxWidth: 450 }}>
+          <Header as='h1' color='teal' textAlign='center'>
+            Welcome! Log in to continue...
+          </Header>
+          <Form size='large' className='attached fluid segment'>
+              <Form.Input
+                onChange={setUserName}
+                value={username}
+                fluid
+                icon='user'
+                iconPosition='left'
+                placeholder='User Name'
+              />
+              <Form.Input
+                onChange={setPassword}
+                value={password}
+                fluid
+                icon='lock'
+                iconPosition='left'
+                placeholder='Password'
+                type='password'
+              />
+
+              <Form.Button color='teal' fluid size='large' onClick={() => {
+                loginAsync({username, password})
+              }}>Login</Form.Button>
+          </Form>
+          <Message attached="bottom" warning icon>
+            <Icon name='pointing right' />
+            <Message.Content>
+              <Message.Header>Notice</Message.Header>
+              Token is valid in 24 hours
+            </Message.Content>
+          </Message>
+          
+        </Grid.Column>
+      </Grid>
+    </div>
   )
 }
 
 class Login extends Component {
-  constructor (props) {
-    super(props);
-  }
 
   render() {
     // 用于跳转回登录前的页, state 对象里包含跳转前的页
@@ -32,48 +72,27 @@ class Login extends Component {
 
 function mapStateToProps(store) {
   return {
+    username: store.login.username,
+    password: store.login.password,
     islogin: store.home.isLogin
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    loginAfterRequest: () => {
-      dispatch(setLogin(true));
+    loginAsync: async ({username, password}) => {
+      const form = new FormData();
+      form.append("username", username);
+      form.append("password", password);
+      const { data } = await http.post('/login', form);
+      setToken(data.data.token)
+      dispatch(homeActions.setLogin(true))
     },
-    logoutManual: () => {
-      dispatch(setLogin(false));
+    setUserName: (e, {value}) => {
+      dispatch(loginActions.setUserName(value));
     },
-    loginAsync: (e) => {
-      e.preventDefault();
-      const form = new FormData(document.querySelector("#login-form"));
-      http.post('/login', form).then(
-        response => {
-          const res = response.data;
-          console.log(res)
-          if (res.msg) {
-            alert(res.message);
-          }
-          if (res.status === true) {
-            setToken(res.token)
-            dispatch(setLogin(true))
-          }
-        },
-        err => {
-          // 获取对象的属性名->array
-          // console.log(Object.getOwnPropertyNames(err))
-          try {
-            const res = err.response.data;
-            if (res.msg) {
-              alert(res.msg)
-            }
-          } catch (error) {
-            alert('网络出错')
-          }
-        }
-    ).catch(err => {
-          alert('网络出错')
-      });
+    setPassword: (e, {value}) => {
+      dispatch(loginActions.setPassword(value));
     }
   }
 }

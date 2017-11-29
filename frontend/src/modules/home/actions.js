@@ -15,12 +15,12 @@ export const loginAsync = () => {
 };
 
 export const getProducts = () => {
-  return (dispatch) => {
-    http.get('/products').then(response => {
-      dispatch({
-        type: SET_PRODUCTS,
-        products: response.data.data
-      });
+  // async 返回promise函数
+  return async (dispatch) => {
+    const res = await http.get('/products');
+    dispatch({
+      type: SET_PRODUCTS,
+      products: res.data.data
     });
   }
 };

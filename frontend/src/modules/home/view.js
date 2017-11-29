@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { getProducts } from './actions';
+import { Link, Route, withRouter } from 'react-router-dom';
+import { loginRequiredWrapper, RouteWithSubroutes } from '../../components/loginWapper';
 
 function ProductList ({products}) {
-  console.log(products);
   const P = products.map(p => (
     <li key={p.ID}>{ p.Slug }</li>
   ));
@@ -15,17 +16,24 @@ function ProductList ({products}) {
 }
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-  }
   componentDidMount () {
     this.props.getProducts();
   }
   render() {
     return (
       <div>
+        <Link style={{margin: "10px"}} className="dashboard-link" to="/">Index</Link>
+        <Link style={{margin: "10px"}} className="dashboard-link" to="/home/articles">Articles</Link>
+        <Link style={{margin: "10px"}} className="dashboard-link" to="/home/subscription">Subscription</Link>
+        <Link style={{margin: "10px"}} className="dashboard-link" to="/home/statistics">Statistics</Link>
         <div> Hello, this is home! </div>
-        <ProductList products={this.props.products} />
+
+        {
+          this.props.routes.map((route, i) => (
+            <RouteWithSubroutes {...route} key={i} />
+          ))
+        }
+        
       </div>
     );
   }
@@ -33,16 +41,15 @@ class Home extends Component {
 
 function mapStateToProps(store) {
   return {
-    products: store.home.products
+    products: store.home.products,
+    islogin: store.home.isLogin
   }
 }
 
-
 function mapDispatchToProps(dispatch) {
-  console.log("init")
   return {
     getProducts: () => {
-      dispatch(getProducts())
+      dispatch(getProducts());
     }
   };
 }
