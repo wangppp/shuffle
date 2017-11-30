@@ -63,6 +63,9 @@ class App extends Component {
     return (
       <Router>
         <div>
+          <Route exact path="/" render={props => (
+            <Redirect to="/home" />
+          )} />
             {
               routes.map((route, i) => (
                 <RouteWithSubroutes {...route} key={i}/>

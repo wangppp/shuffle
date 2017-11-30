@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import { getProducts } from './actions';
 import { Link, Route, withRouter } from 'react-router-dom';
 import { loginRequiredWrapper, RouteWithSubroutes } from '../../components/loginWapper';
+import { Grid, Menu, Segment, Icon, Divider } from 'semantic-ui-react';
 
 function ProductList ({products}) {
   const P = products.map(p => (
@@ -20,21 +21,43 @@ class Home extends Component {
     this.props.getProducts();
   }
   render() {
+    const { location } = this.props
+    const path = location.pathname
     return (
-      <div>
-        <Link style={{margin: "10px"}} className="dashboard-link" to="/">Index</Link>
-        <Link style={{margin: "10px"}} className="dashboard-link" to="/home/articles">Articles</Link>
-        <Link style={{margin: "10px"}} className="dashboard-link" to="/home/subscription">Subscription</Link>
-        <Link style={{margin: "10px"}} className="dashboard-link" to="/home/statistics">Statistics</Link>
-        <div> Hello, this is home! </div>
+      <Grid className="full-grid">
+        <Grid.Column width={4} className="dark-col">
+          <Icon name="rocket" size="huge" color="teal" />
+          <Menu fluid vertical inverted pointing secondary className="fashion-menu">
+            <Menu.Item name='home' active={path === '/home'} as={Link} to="/home">
+               Home
+            </Menu.Item>
 
-        {
-          this.props.routes.map((route, i) => (
-            <RouteWithSubroutes {...route} key={i} />
-          ))
-        }
-        
-      </div>
+            <Menu.Item name='articles' active={path === '/home/articles'} as={Link} to="/home/articles">
+              Articles
+            </Menu.Item>
+
+            <Menu.Item name='subscription' active={path === '/home/subscription'} as={Link} to="/home/subscription">
+              Subscription
+            </Menu.Item>
+            
+            <Menu.Item name='statistics' active={path === '/home/statistics'} as={Link} to="/home/statistics">
+              Statistics
+            </Menu.Item>
+
+          </Menu>
+        </Grid.Column>
+
+        <Grid.Column stretched width={12}>
+          
+            {
+              this.props.routes.map((route, i) => (
+                <RouteWithSubroutes {...route} key={i} />
+              ))
+            }
+          
+          
+        </Grid.Column>
+      </Grid>
     );
   }
 } 
@@ -54,4 +77,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
