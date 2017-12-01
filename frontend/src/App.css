@@ -13,7 +13,6 @@
 }
 .fashion-menu{
   padding-left: 10px;
-  padding-top: 80px;
 }
 .ui.secondary.pointing.menu.fashion-menu .active.item{
   border-color: #e13d8b;
@@ -25,4 +24,13 @@
   height: 50px;
   line-height: 26px;
   transform: translateX(4px)
+}
+.dashboard-menu-logo{
+  text-align: center;
+  
+}
+.dashboard-menu-logo>img{
+  width: 150px;
+  height: auto;
+  box-sizing: border-box;
 }

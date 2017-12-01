@@ -5,6 +5,8 @@ import { Link, Route, withRouter } from 'react-router-dom';
 import { loginRequiredWrapper, RouteWithSubroutes } from '../../components/loginWapper';
 import { Grid, Menu, Segment, Icon, Divider } from 'semantic-ui-react';
 
+const  Logo = require("../../assets/imgs/Logo.png")
+
 function ProductList ({products}) {
   const P = products.map(p => (
     <li key={p.ID}>{ p.Slug }</li>
@@ -26,7 +28,9 @@ class Home extends Component {
     return (
       <Grid className="full-grid">
         <Grid.Column width={4} className="dark-col">
-          <Icon name="rocket" size="huge" color="teal" />
+          <div className="dashboard-menu-logo">
+            <img src={Logo} />
+          </div>
           <Menu fluid vertical inverted pointing secondary className="fashion-menu">
             <Menu.Item name='home' active={path === '/home'} as={Link} to="/home">
                Home
