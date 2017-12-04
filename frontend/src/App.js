@@ -39,19 +39,19 @@ const routes = [
     component: Login
   },
   {
-    path: '/home',
+    path: '/dashboard',
     component: loginRequiredWrapper(Home),
     routes: [
       {
-        path: '/home/articles',
+        path: '/dashboard/articles',
         component: loginRequiredWrapper(Articles)
       },
       {
-        path: '/home/subscription',
+        path: '/dashboard/subscription',
         component: loginRequiredWrapper(Subscription)
       },
       {
-        path: '/home/statistics',
+        path: '/dashboard/statistics',
         component: loginRequiredWrapper(Statistics)
       },
     ]
@@ -64,7 +64,7 @@ class App extends Component {
       <Router>
         <div>
           <Route exact path="/" render={props => (
-            <Redirect to="/home" />
+            <Redirect to="/dashboard" />
           )} />
             {
               routes.map((route, i) => (

@@ -4,12 +4,20 @@
 .menu-col{
   background-color: #cee4ff;
 }
-.full-grid{
+.ui.grid.full-grid{
   height: 100vh;
+  margin-top: 0rem;
 }
 .dark-col{
   background-color: #18212f;
   padding-right: 0!important;
+  width: 200px!important;
+  flex: 0 0 200px;
+
+}
+.right-board{
+  flex: 1;
+  margin-top: -1rem;
 }
 .fashion-menu{
   padding-left: 10px;
@@ -33,4 +41,31 @@
   width: 150px;
   height: auto;
   box-sizing: border-box;
+}
+.dashboard-header{
+  background-color: #18212f;
+  height: 60px;
+}
+.dashboard-header .acount{
+  float: right;
+  margin-right: 30px;
+}
+.dashboard-header .acount>img{
+  margin-right: 10px;
+}
+.dashboard-header .acount>img, .dashboard-header .acount>.dropdown{
+  display: inline-block;
+  color: #fff;
+  line-height: 60px;
+}
+.ui.input.dashboard-search{
+  padding: 12px 0;
+}
+.ui.input.dashboard-search>input{
+  background-color: #18202f;
+  border: none;
+  color: #ccc;
+}
+.ui.input.dashboard-search>i{
+  color: #68778f;
 }
