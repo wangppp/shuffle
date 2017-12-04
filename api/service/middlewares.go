@@ -6,7 +6,6 @@ import (
 	"time"
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/unrolled/render"
 	"log"
 	"github.com/wangppp/shuffle/api/config"
 )
@@ -27,13 +26,6 @@ var products = []Product{
 	Product{2, "Ocean Explorer", "ocean-explorer", "shoot on your way to the top"},
 }
 
-func testHandler(formatter *render.Render) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		formatter.JSON(w, http.StatusOK,
-			struct{ Test string }{"this is a test"})
-	}
-}
-
 func customizeMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	log.Print("test custom middleware")
 	setCrossOriginSite(w)
@@ -47,15 +39,6 @@ func customizeMiddleware(w http.ResponseWriter, r *http.Request, next http.Handl
 	}
 }
 
-// DefaultHandler just simply return the message "Not Implememted"
-func DefaultHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Not Implemented"))
-}
-
-// StatusHandler 返回API的状态
-var StatusHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("API is running"))
-})
 
 // LoginHandler login 
 var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

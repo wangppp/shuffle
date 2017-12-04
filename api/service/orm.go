@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-
 	"github.com/go-pg/pg"
 )
 
@@ -20,16 +19,19 @@ func (u User) String() string {
 	return fmt.Sprintf("User<%d %s %v>", u.Id, u.Name, u.Emails)
 }
 
-// Story story model struct
-type Story struct {
-	Id       int64
-	Title    string
-	AuthorId int64
-	Author   *User
-}
 
-func (s Story) String() string {
-	return fmt.Sprintf("Story <%d %s %s>", s.Id, s.Title, s.Author)
+
+// Article model struct
+type Article struct {
+	Id int64
+	Title string
+	AuthorId int64
+	Author *User
+	Content string
+	Views int64
+	Comments int64
+	CreatedAt int64
+	UpdatedAt int64
 }
 
 var Db *pg.DB

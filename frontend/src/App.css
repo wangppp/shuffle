@@ -69,3 +69,6 @@
 .ui.input.dashboard-search>i{
   color: #68778f;
 }
+.ui.grid>.row>.column.dashboard-body{
+  padding: 10px 24px 10px 14px;
+}

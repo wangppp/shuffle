@@ -1,4 +1,4 @@
-import view from './view.js';
+import view from './views';
 import * as actions from './actions';
 import reducers from "./reducers";
 
