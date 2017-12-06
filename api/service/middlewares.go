@@ -1,6 +1,7 @@
 package service
 
 import (
+	"encoding/json"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"time"
@@ -121,3 +122,46 @@ func setCrossOriginSite(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 	w.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 }
+
+
+type PostArticle struct {
+	Title string `json:"title"`
+	Content map[string]interface{}  `json:"content"`
+}
+
+// SaveArticle is successfully created!
+var SaveArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var post PostArticle
+	err := decoder.Decode(&post)
+	if err != nil {
+		panic(err)
+	}
+	defer r.Body.Close()
+
+	article := Article{
+		Title: "Hello, 世界!",
+		AuthorId: 1,
+		Content: post.Content,
+		Views: 0,
+		Comments:0,
+		CreatedAt: time.Now().Unix(),
+		UpdatedAt: time.Now().Unix(),
+	}
+
+
+	err = Db.Insert(&article)
+	if err == nil {
+		httpReturnJSON(w, map[string]interface{}{
+			"success": true,
+		})
+	}
+})
+
+var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	var articles  []Article
+	err := Db.Model(&articles).Column("article.id", "article.title", "article.created_at", "article.updated_at", "Author").Select()
+	handleErr(err)
+
+	httpReturnJSON(w, articles)
+})

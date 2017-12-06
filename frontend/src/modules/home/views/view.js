@@ -5,6 +5,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { RouteWithSubroutes } from '../../../components/loginWapper';
 import { Grid, Menu, Image, Dropdown, Input } from 'semantic-ui-react';
 import Dashboard from "./dashboard"
+import { removeToken } from "../../../utils/auth"
 
 const Logo = require("../../../assets/imgs/Logo.png")
 const User = require("../../../assets/imgs/man.png")
@@ -52,7 +53,7 @@ class Home extends Component {
                   <Image circular size="mini" src={User} />
                   <Dropdown text='Adam' pointing labeled className='link item'>
                     <Dropdown.Menu>
-                      <Dropdown.Item onClick={logout}>Leog out</Dropdown.Item>
+                      <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
@@ -95,6 +96,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(getProducts());
     },
     logout: (e) => {
+      removeToken()
       dispatch(setLogin(false))
     }
   };

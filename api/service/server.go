@@ -1,7 +1,6 @@
 package service
 
 import (
-	"time"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -13,9 +12,6 @@ import (
 func NewServer() *negroni.Negroni {
 	// 将public目录作为静态资源目录
 	n := negroni.Classic()
-
-	// prefix
-	
 
 	// 使用USE来加入中间件use -> Middleware
 	n.Use(negroni.HandlerFunc(customizeMiddleware))
@@ -48,19 +44,12 @@ func initRoutes(mx *mux.Router) {
 	)).Methods("GET")
 
 	mx.HandleFunc("/api/v1/createnewtable", func (w http.ResponseWriter, r *http.Request) {
-		err := Db.Insert(&Article{
-			Title: "This is the first article",
-			AuthorId: 1,
-			Content: `
-				<h2>May God bless us</h2>
-				Omen👭
-			`,
-			CreatedAt: time.Now().Unix(),
-			UpdatedAt: time.Now().Unix(),
-		})
-		if (err == nil) {
-			w.Write([]byte("Insert table successfully!"))
+		err := Db.CreateTable(&Article{}, nil)
+		if err != nil {
+			log.Print(err)
+			panic(nil)
 		}
+		w.Write([]byte("Create table successfully!"))
 	})
 
 	mx.HandleFunc("/api/v1/getarticles", func (w http.ResponseWriter, r *http.Request) {
@@ -71,6 +60,9 @@ func initRoutes(mx *mux.Router) {
 			w.Write(res)
 		}
 	})
+
+	mx.HandleFunc("/api/v1/article", SaveArticle).Methods("POST")
+	mx.HandleFunc("/api/v1/article", GetArticles).Methods("GET")
 
 	// CRUD
 	// mx.HandleFunc("/api/v1/get_users", func(w http.ResponseWriter, r *http.Request) {

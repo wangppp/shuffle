@@ -9,20 +9,7 @@ import { connect } from "react-redux";
 import { view as Home } from "./modules/home";
 import { view as Login } from "./modules/login";
 import { loginRequiredWrapper, RouteWithSubroutes } from './components/loginWapper';
-
-
-const Articles = () => (
-  <ul>
-    <li>1</li>
-    <li>1</li>
-    <li>1</li>
-    <Route path="/home/articles/subsub" render={ (props) => (
-      <div>
-        Sub Sub Route!
-      </div>
-    )} />
-  </ul>
-);
+import { view as ArticlePage } from './modules/articles'
 
 const Subscription = () => (
   <p>New subscribers here.</p>
@@ -43,7 +30,7 @@ const routes = [
     routes: [
       {
         path: '/dashboard/articles',
-        component: loginRequiredWrapper(Articles)
+        component: loginRequiredWrapper(ArticlePage)
       },
       {
         path: '/dashboard/subscription',

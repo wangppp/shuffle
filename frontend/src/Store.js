@@ -1,19 +1,13 @@
-import {
-  createStore,
-  combineReducers,
-  applyMiddleware
-} from 'redux';
-import {
-  reducers as HomeReducer
-} from "./modules/home";
-import {
-  reducers as LoginReducer
-} from "./modules/login";
-import thunkMiddleware from 'redux-thunk';
+import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { reducers as HomeReducer } from "./modules/home"
+import { reducers as LoginReducer } from "./modules/login"
+import { reducers as ArticleReducer } from './modules/articles'
+import thunkMiddleware from 'redux-thunk'
 
 const reducer = combineReducers({
   home: HomeReducer,
-  login: LoginReducer
+  login: LoginReducer,
+  articles: ArticleReducer
 });
 
 // 引用

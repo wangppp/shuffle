@@ -72,3 +72,10 @@
 .ui.grid>.row>.column.dashboard-body{
   padding: 10px 24px 10px 14px;
 }
+.article-editor{
+  min-height: 300px;
+}
+.article-editor-wrapper{
+  padding: 10px;
+  border: 2px #68778f dashed;
+}
