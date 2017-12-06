@@ -12,7 +12,13 @@ const ArticleRow = ({title, author, created_at, updated_at, id}) => (
       <Table.Cell>{getTime(created_at)}</Table.Cell>
       <Table.Cell>{getTime(updated_at)}</Table.Cell>
       <Table.Cell>
-        <Button content="View"></Button>
+        <Button>
+          <Link to={{
+            pathname: '/dashboard/article/' + id
+          }}>
+            View
+          </Link>
+        </Button>
       </Table.Cell>
     </Table.Row>
 )

@@ -21,7 +21,7 @@ func (u User) String() string {
 
 // Article model struct
 type Article struct {
-	Id int64	`json:"-"`
+	Id int64	`json:"id"`
 	Title string	`json:"title"`
 	AuthorId int64	`json:"-"`
 	Author *User	`json:"author"`

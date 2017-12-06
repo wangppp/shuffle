@@ -33,6 +33,12 @@ const routes = [
         component: loginRequiredWrapper(ArticlePage)
       },
       {
+        path: '/dashboard/article/:id',
+        component: () => (
+          <p>Hey</p>
+        )
+      },
+      {
         path: '/dashboard/subscription',
         component: loginRequiredWrapper(Subscription)
       },
