@@ -1,4 +1,5 @@
 /.wercker/
 /frontend/node_modules/
 /db/pgdata
-/api/tmp
+/api/tmp/
+api/tmp/runner-build

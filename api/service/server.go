@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/go-pg/pg/orm"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -50,14 +51,14 @@ func initRoutes(mx *mux.Router) {
 			Where("name = ?", "Adam").
 			Limit(1).
 			Select()
-
+		log.Print(err)
 		if err != nil {
 			// 不存在管理员的话就新建表
 			for _, model := range []interface{}{
 				&User{},
 				&Article{},
 			} {
-				err := Db.CreateTable(model, nil)
+				err := Db.CreateTable(model, &orm.CreateTableOptions{IfNotExists: true})
 				handleErr(err)
 			}
 
@@ -68,8 +69,9 @@ func initRoutes(mx *mux.Router) {
 			})
 			handleErr(err)
 			w.Write([]byte("Init table successfuly"))
+		} else {
+			w.Write([]byte("No need to init database"))
 		}
-		w.Write([]byte("No need to init database"))
 
 	}).Methods("GET")
 
