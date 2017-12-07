@@ -45,13 +45,33 @@ func initRoutes(mx *mux.Router) {
 	)).Methods("GET")
 
 	mx.HandleFunc("/api/v1/createnewtable", func (w http.ResponseWriter, r *http.Request) {
-		err := Db.CreateTable(&Article{}, nil)
+		user := User{}
+		err := Db.Model(&user).
+			Where("name = ?", "Adam").
+			Limit(1).
+			Select()
+
 		if err != nil {
-			log.Print(err)
-			panic(nil)
+			// 不存在管理员的话就新建表
+			for _, model := range []interface{}{
+				&User{},
+				&Article{},
+			} {
+				err := Db.CreateTable(model, nil)
+				handleErr(err)
+			}
+
+			err := Db.Insert(&User{
+				Name: "Adam",
+				PasswordHash: "$2a$04$w1CC5RcMTcgYk27B6DkMb.6slCJVkEH5i//0Y3kGCYh3glRU1KVOC",
+				Role: 7,
+			})
+			handleErr(err)
+			w.Write([]byte("Init table successfuly"))
 		}
-		w.Write([]byte("Create table successfully!"))
-	})
+		w.Write([]byte("No need to init database"))
+
+	}).Methods("GET")
 
 	mx.HandleFunc("/api/v1/getarticles", func (w http.ResponseWriter, r *http.Request) {
 		var articles []Article
