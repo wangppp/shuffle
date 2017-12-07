@@ -2,24 +2,25 @@ import React, { Component } from 'react';
 import { Button } from 'semantic-ui-react';
 import { ArticleEditor } from '../../../components/ArticleEditor';
 import http from '../../../utils/http'
+import { convertToRaw } from 'draft-js'
 
 class Dashboard extends Component {
 
   constructor (props) {
     super(props)
     this.state = {
-      editorSate: {}
+      editorState: {}
     }
-    this.OnChange = (editorSate) => {
+    this.OnChange = (editorState) => {
       this.setState({
-        editorSate
+        editorState
       })
     }
 
     this.clickSaveArticle = (e) => {
       http.post('/article', {
-        title: 'hey, how\'re u doing?',
-        content: this.state.editorSate
+        title: 'Do we Succeed!?',
+        content: convertToRaw(this.state.editorState.getCurrentContent())
       }).then(res => {})
     }
   }

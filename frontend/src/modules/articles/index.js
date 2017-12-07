@@ -1,5 +1,7 @@
 import ArticlePage from './views'
+import ArticleView from './views/article_view'
+
 import * as actions from './actions'
 import reducers from './reducers'
 
-export { ArticlePage as view, actions, reducers }
+export { ArticlePage, ArticleView, actions, reducers }

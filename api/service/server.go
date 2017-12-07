@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
+	"strconv"
 )
 
 // NewServer configures and return a Server
@@ -63,6 +64,19 @@ func initRoutes(mx *mux.Router) {
 
 	mx.HandleFunc("/api/v1/article", SaveArticle).Methods("POST")
 	mx.HandleFunc("/api/v1/article", GetArticles).Methods("GET")
+
+	mx.HandleFunc("/api/v1/article/{id:[0-9]+}", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		articleID := vars["id"]
+		intID, err := strconv.Atoi(articleID)
+		handleErr(err)
+		article := ViewArticle{
+			Id: int64(intID),
+		}
+		err = Db.Select(&article)
+		handleErr(err)
+		httpReturnJSON(w, article)
+	}).Methods("GET")
 
 	// CRUD
 	// mx.HandleFunc("/api/v1/get_users", func(w http.ResponseWriter, r *http.Request) {

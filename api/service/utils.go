@@ -37,7 +37,7 @@ func generateJWTToken(u *User) string {
 
 	claims["admin"] = isAdmin(u.Role)
 	claims["name"] = u.Name
-	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
 
 	// Sign the token with our secret
 	tokenString, err := token.SignedString(mySigningKey)

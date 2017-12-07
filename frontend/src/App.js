@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { view as Home } from "./modules/home";
 import { view as Login } from "./modules/login";
 import { loginRequiredWrapper, RouteWithSubroutes } from './components/loginWapper';
-import { view as ArticlePage } from './modules/articles'
+import { ArticlePage, ArticleView } from './modules/articles'
 
 const Subscription = () => (
   <p>New subscribers here.</p>
@@ -19,6 +19,7 @@ const Statistics = () => (
   <p>Subscribers statistics...</p>
 );
 
+// login required wrapper 是否应该做成一个redux 的middleware
 const routes = [
   {
     path: '/login',
@@ -34,9 +35,7 @@ const routes = [
       },
       {
         path: '/dashboard/article/:id',
-        component: () => (
-          <p>Hey</p>
-        )
+        component: loginRequiredWrapper(ArticleView)
       },
       {
         path: '/dashboard/subscription',

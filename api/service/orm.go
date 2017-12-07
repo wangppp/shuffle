@@ -32,6 +32,19 @@ type Article struct {
 	UpdatedAt int64	`json:"updated_at"`
 }
 
+type ViewArticle struct {
+	TableName struct{} `sql:"articles"`
+	Id int64	`json:"id"`
+	Title string	`json:"title"`
+	AuthorId int64	`json:"-"`
+	Author *User	`json:"author"`
+	Content map[string]interface{} 	`json:"content"`
+	Views int64	`json:"views"`
+	Comments int64	`json:"-"`
+	CreatedAt int64	`json:"created_at"`
+	UpdatedAt int64	`json:"updated_at"`
+}
+
 var Db *pg.DB
 
 func GetPgOrm() *pg.DB {
