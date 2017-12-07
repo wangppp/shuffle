@@ -61,9 +61,6 @@ func GetPgOrm() *pg.DB {
 	return db
 }
 
-func init() {
-	Db = GetPgOrm()
-}
 
 func handleErr(err error) {
 	if err != nil {

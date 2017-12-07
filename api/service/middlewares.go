@@ -28,6 +28,7 @@ var products = []Product{
 }
 
 func customizeMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	Db = GetPgOrm()
 	log.Print("test custom middleware")
 	setCrossOriginSite(w)
 	// 手动调用下一个middleware
@@ -164,4 +165,5 @@ var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	handleErr(err)
 
 	httpReturnJSON(w, articles)
+	log.Print("App request!")
 })

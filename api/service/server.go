@@ -20,19 +20,26 @@ func NewServer() *negroni.Negroni {
 
 	// mx 是一个实现了http.Handler interface的 struct 的实体
 	mx := mux.NewRouter()
-	initRoutes(mx)
+
+	api := mx.PathPrefix("/api/v1").Subrouter().StrictSlash(true)
+
+	initRoutes(api)
 
 	// 传http.Handler struct
-	n.UseHandler(mx)
+	n.UseHandler(api)
+	n.Use(negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+		log.Print("THe last out put?!")
+		Db.Close()
+	}))
 	return n
 }
 
 func initRoutes(mx *mux.Router) {
 	
 	// init all routes here
-	mx.HandleFunc("/api/v1/login", LoginHandler).Methods("POST")
-	mx.HandleFunc("/api/v1/get-token", GetTokenHandler).Methods("GET")
-	mx.Handle("/api/v1/products", negroni.New(
+	mx.HandleFunc("/login", LoginHandler).Methods("POST")
+	mx.HandleFunc("/get-token", GetTokenHandler).Methods("GET")
+	mx.Handle("/products", negroni.New(
 		negroni.HandlerFunc(jwtMiddleWare.HandlerWithNext),
 		negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, n http.HandlerFunc) {
 			// check token whether it is valid!
@@ -45,7 +52,7 @@ func initRoutes(mx *mux.Router) {
 		negroni.Wrap(ProductsHandler),
 	)).Methods("GET")
 
-	mx.HandleFunc("/api/v1/createnewtable", func (w http.ResponseWriter, r *http.Request) {
+	mx.HandleFunc("/createnewtable", func (w http.ResponseWriter, r *http.Request) {
 		user := User{}
 		err := Db.Model(&user).
 			Where("name = ?", "Adam").
@@ -75,7 +82,7 @@ func initRoutes(mx *mux.Router) {
 
 	}).Methods("GET")
 
-	mx.HandleFunc("/api/v1/getarticles", func (w http.ResponseWriter, r *http.Request) {
+	mx.HandleFunc("/getarticles", func (w http.ResponseWriter, r *http.Request) {
 		var articles []Article
 		err := Db.Model(&articles).Select()
 		if (err == nil) {
@@ -84,10 +91,10 @@ func initRoutes(mx *mux.Router) {
 		}
 	})
 
-	mx.HandleFunc("/api/v1/article", SaveArticle).Methods("POST")
-	mx.HandleFunc("/api/v1/article", GetArticles).Methods("GET")
+	mx.HandleFunc("/article", SaveArticle).Methods("POST")
+	mx.HandleFunc("/article", GetArticles).Methods("GET")
 
-	mx.HandleFunc("/api/v1/article/{id:[0-9]+}", func(w http.ResponseWriter, r *http.Request) {
+	mx.HandleFunc("/article/{id:[0-9]+}", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		articleID := vars["id"]
 		intID, err := strconv.Atoi(articleID)
@@ -99,53 +106,5 @@ func initRoutes(mx *mux.Router) {
 		handleErr(err)
 		httpReturnJSON(w, article)
 	}).Methods("GET")
-
-	// CRUD
-	// mx.HandleFunc("/api/v1/get_users", func(w http.ResponseWriter, r *http.Request) {
-	// 	type UserResults struct {
-	// 		Name string `json:"name"`
-	// 		Users []User `json:"users"`
-	// 	}
-	// 	var users []User
-	// 	err := Db.Model(&users).Select()
-	// 	handleErr(err)
-	// 	res := UserResults{
-	// 		"ok",
-	// 		users,
-	// 	}
-	// 	resjson, err := json.Marshal(res)
-	// 	handleErr(err)
-	// 	w.Write(resjson)
-	// 	w.Header().Add("Content-Type", "application/json")
-	// })
-
-	// mx.HandleFunc("/api/v1/insert_users", func(w http.ResponseWriter, r *http.Request) {
-	// 	user1 := &User{
-	// 		Name:   "Adam",
-	// 		Emails: []string{"adam@gmail", "wang@gmail"},
-	// 	}
-	// 	err := Db.Insert(user1)
-	// 	handleErr(err)
-	// 	w.Write([]byte("sucessfully insert users"))
-	// })
-
-	// mx.HandleFunc("/api/v1/insert_stories", func(w http.ResponseWriter, r *http.Request) {
-	// 	story := Story{Title: "Bad Romance", AuthorId: 1}
-	// 	Db.Insert(&story)
-	// 	w.Write([]byte("Insert story successfully"))
-	// })
-
-	// mx.HandleFunc("/api/v1/story", func(w http.ResponseWriter, r *http.Request) {
-	// 	var story Story
-	// 	err := Db.Model(&story).Column("story.*", "Author").
-	// 	Where("story.id= ?", 1).
-	// 	Select()
-	// 	handleErr(err)
-
-	// 	res, err := json.Marshal(story)
-	// 	handleErr(err)
-
-	// 	w.Write(res)
-	// 	w.Header().Add("Content-Type", "application/json")
-	// })
+	
 }
