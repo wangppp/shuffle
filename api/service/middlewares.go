@@ -8,7 +8,10 @@ import (
 	"github.com/auth0/go-jwt-middleware"
 	"github.com/dgrijalva/jwt-go"
 	"log"
+	"github.com/codegangsta/negroni"
 	"github.com/wangppp/shuffle/api/config"
+	"github.com/gorilla/mux"
+	"strconv"
 )
 
 // my token secret
@@ -27,7 +30,8 @@ var products = []Product{
 	Product{2, "Ocean Explorer", "ocean-explorer", "shoot on your way to the top"},
 }
 
-func customizeMiddleware(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+var customizeMiddleware = negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	w.Write([]byte("Customized msg"))
 	Db = GetPgOrm()
 	log.Print("test custom middleware")
 	setCrossOriginSite(w)
@@ -39,7 +43,19 @@ func customizeMiddleware(w http.ResponseWriter, r *http.Request, next http.Handl
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(""))
 	}
-}
+})
+
+var endMiddleWare = negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	log.Print("THe last out put?!")
+	Db.Close()
+})
+
+var jwtMiddleWare = negroni.HandlerFunc(jwtmiddleware.New(jwtmiddleware.Options{
+	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+		return mySigningKey, nil
+	},
+	SigningMethod: jwt.SigningMethodHS256,
+}).HandlerWithNext)
 
 
 // LoginHandler login 
@@ -104,12 +120,7 @@ var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 	w.Write([]byte(tokenString))
 })
 
-var jwtMiddleWare = jwtmiddleware.New(jwtmiddleware.Options{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		return mySigningKey, nil
-	},
-	SigningMethod: jwt.SigningMethodHS256,
-})
+
 
 // 设置跨域
 func setCrossOriginSite(w http.ResponseWriter) {
@@ -167,3 +178,16 @@ var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	httpReturnJSON(w, articles)
 	log.Print("App request!")
 })
+
+var GetArticle = func(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	articleID := vars["id"]
+	intID, err := strconv.Atoi(articleID)
+	handleErr(err)
+	article := ViewArticle{
+		Id: int64(intID),
+	}
+	err = Db.Select(&article)
+	handleErr(err)
+	httpReturnJSON(w, article)
+}

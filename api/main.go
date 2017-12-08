@@ -6,9 +6,6 @@ import (
 	"github.com/wangppp/shuffle/api/service"
 )
 
-
-
-
 func main() {
 	// testPgOrm()
 	port := os.Getenv("PORT")
@@ -18,23 +15,6 @@ func main() {
 	server := service.NewServer()
 	server.Run(":" + port)
 }
-
-func checkErr(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-// func createSchema(db *pg.DB) error {
-// 	for _, model := range []interface{}{&User{}, &Story{}} {
-// 		err := db.CreateTable(model, nil)
-// 		log.Print(model)
-// 		if err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
 
 func handleErr(err error) {
 	if err != nil {
