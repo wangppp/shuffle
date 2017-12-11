@@ -17,36 +17,21 @@ import (
 // my token secret
 var mySigningKey = []byte("secret")
 
-// Product 产品的结构
-type Product struct {
-	ID          int
-	Name        string
-	Slug        string
-	Description string
-}
-
-var products = []Product{
-	Product{1, "Hover Shooters", "hover-shooters", "shoot on your way to the top"},
-	Product{2, "Ocean Explorer", "ocean-explorer", "shoot on your way to the top"},
-}
-
 var customizeMiddleware = negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	w.Write([]byte("Customized msg"))
 	Db = GetPgOrm()
-	log.Print("test custom middleware")
 	setCrossOriginSite(w)
 	// 手动调用下一个middleware
 	if r.Method != "OPTIONS" {
 		next(w, r)
 	} else {
-		log.Print("only for options")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte(""))
 	}
 })
 
+// endMiddleWare 请求结束的中间件
+// 用于关闭数据库链接之类的
 var endMiddleWare = negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	log.Print("THe last out put?!")
 	Db.Close()
 })
 
@@ -90,11 +75,6 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	}
 
 	httpReturnJSON(w, result)
-})
-
-// ProductsHandler 返回产品数据
-var ProductsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	httpReturnJSON(w, products)
 })
 
 // GetTokenHandler 将穿进去的匿名函数转化为HandlerFunc 类型, 实际上是一个类型转化过程

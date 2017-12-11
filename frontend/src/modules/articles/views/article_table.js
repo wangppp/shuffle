@@ -3,6 +3,9 @@ import { Table, Icon, Button } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import { getTime } from '../../../utils/time'
 
+
+
+
 const ArticleRow = ({title, author, created_at, updated_at, id}) => (
     <Table.Row key={id}>
       <Table.Cell collapsing>

@@ -84,7 +84,7 @@ function mapDispatchToProps(dispatch) {
       const form = new FormData();
       form.append("username", username);
       form.append("password", password);
-      const { data } = await http.post('/login', form);
+      const { data } = await http.post('/public/login', form);
       setToken(data.data.token)
       dispatch(homeActions.setLogin(true))
     },

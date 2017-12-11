@@ -10,21 +10,17 @@ import (
 func NewServer() *negroni.Negroni {
 	// 将public目录作为静态资源目录
 	n := negroni.Classic()
-
 	// mx 是一个实现了http.Handler interface的 struct 的实体
 	mx := mux.NewRouter()
-
-	// Init Routes!!!!!!!!
+	// Init Routes
 	initRoutes(mx)
-
 	// 传http.Handler struct
 	n.UseHandler(mx)
-	
+
 	return n
 }
 
 func initRoutes(mx *mux.Router) {
-
 	// API router init
 	// public API such as /login, /index
 	publicAPI := mux.NewRouter().PathPrefix("/api/v1/public").Subrouter().StrictSlash(true)
@@ -40,7 +36,6 @@ func initRoutes(mx *mux.Router) {
 	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticle).Methods("GET")
 
 	// 可以将一组路由看成一个模块或控制器
-
 	mx.PathPrefix("/api/v1/admin").Handler(negroni.New(
 		customizeMiddleware,
 		jwtMiddleWare,

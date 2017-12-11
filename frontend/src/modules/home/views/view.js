@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getProducts, setLogin } from '../actions';
+import { setLogin } from '../actions';
 import { Link, withRouter } from 'react-router-dom';
 import { RouteWithSubroutes } from '../../../components/loginWapper';
 import { Grid, Menu, Image, Dropdown, Input } from 'semantic-ui-react';
@@ -12,9 +12,6 @@ const User = require("../../../assets/imgs/man.png")
 
 
 class Home extends Component {
-  componentDidMount() {
-    this.props.getProducts();
-  }
   render() {
     const { location, logout } = this.props
     const path = location.pathname
@@ -66,8 +63,6 @@ class Home extends Component {
                     <Dashboard {...this.props} /> :
                     ''
                   }
-
-
                   {
                     this.props.routes.map((route, i) => (
                       <RouteWithSubroutes {...route} key={i} />
@@ -83,18 +78,9 @@ class Home extends Component {
   }
 }
 
-function mapStateToProps(store) {
-  return {
-    products: store.home.products,
-    islogin: store.home.isLogin
-  }
-}
 
 function mapDispatchToProps(dispatch) {
   return {
-    getProducts: () => {
-      dispatch(getProducts());
-    },
     logout: (e) => {
       removeToken()
       dispatch(setLogin(false))
@@ -102,4 +88,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
+export default withRouter(connect(null, mapDispatchToProps)(Home));
