@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
   Redirect,
-  // Link,
+  Switch,
   Route
 } from 'react-router-dom';
 import { connect } from "react-redux";
 import { view as Home } from "./modules/home";
 import { view as Login } from "./modules/login";
 import { loginRequiredWrapper, RouteWithSubroutes } from './components/loginWapper';
-import { ArticlePage, ArticleView } from './modules/articles'
+import { ArticlePage, ArticleView, UpdateArticle } from './modules/articles'
 
 const Subscription = () => (
   <p>New subscribers here.</p>
@@ -31,11 +31,15 @@ const routes = [
     routes: [
       {
         path: '/dashboard/articles',
-        component: loginRequiredWrapper(ArticlePage)
+        component: loginRequiredWrapper(ArticlePage),
+      },
+      {
+        path: '/dashboard/article/:id/update',
+        component: loginRequiredWrapper(UpdateArticle),
       },
       {
         path: '/dashboard/article/:id',
-        component: loginRequiredWrapper(ArticleView)
+        component: loginRequiredWrapper(ArticleView),
       },
       {
         path: '/dashboard/subscription',
@@ -57,11 +61,13 @@ class App extends Component {
           <Route exact path="/" render={props => (
             <Redirect to="/dashboard" />
           )} />
+          <Switch>
             {
               routes.map((route, i) => (
                 <RouteWithSubroutes {...route} key={i}/>
               ))
             }
+          </Switch>
         </div>
       </Router>
     );

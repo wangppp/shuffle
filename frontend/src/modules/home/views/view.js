@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { setLogin } from '../actions';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, Switch } from 'react-router-dom';
 import { RouteWithSubroutes } from '../../../components/loginWapper';
 import { Grid, Menu, Image, Dropdown, Input } from 'semantic-ui-react';
 import Dashboard from "./dashboard"
@@ -63,11 +63,14 @@ class Home extends Component {
                     <Dashboard {...this.props} /> :
                     ''
                   }
-                  {
-                    this.props.routes.map((route, i) => (
-                      <RouteWithSubroutes {...route} key={i} />
-                    ))
-                  }
+                  <Switch>
+                    {
+                      this.props.routes.map((route, i) => (
+                        <RouteWithSubroutes {...route} key={i} />
+                      ))
+                    }
+                  </Switch>
+                  
                 </div>
               </Grid.Column>
             </Grid.Row>

@@ -18,7 +18,7 @@ class Dashboard extends Component {
     }
 
     this.clickSaveArticle = (e) => {
-      http.post('/article', {
+      http.post('/admin/article', {
         title: 'Do we Succeed!?',
         content: convertToRaw(this.state.editorState.getCurrentContent())
       }).then(res => {})

@@ -121,6 +121,11 @@ type PostArticle struct {
 	Content map[string]interface{}  `json:"content"`
 }
 
+type PostUpdate struct {
+	ID string `json:"id"`
+	Content map[string]interface{} `json:"content"`
+}
+
 // SaveArticle is successfully created!
 var SaveArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
@@ -148,6 +153,27 @@ var SaveArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request)
 			"success": true,
 		})
 	}
+})
+
+var UpdateArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+	var post PostUpdate
+	err := decoder.Decode(&post)
+	handleErr(err)
+	defer r.Body.Close()
+	
+	id, err := strconv.Atoi(post.ID)
+
+	article := Article{
+		Id: int64(id),
+		Content: post.Content,
+	}
+
+	_, err = Db.Model(&article).Set("content = ?content").Where("id = ?id").Update()
+
+	handleErr(err)
+
+	httpReturnJSON(w, jsonResponse{Status: true})
 })
 
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

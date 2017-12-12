@@ -18,7 +18,7 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   response => {
-
+    
     return response;
   },
   error => {

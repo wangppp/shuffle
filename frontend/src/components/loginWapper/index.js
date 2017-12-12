@@ -25,7 +25,7 @@ export const loginRequiredWrapper = (Component) => {
 };
 
 export const RouteWithSubroutes = (route) => (
-  <Route path={route.path} render={ props => (
-    <route.component {...props} routes={route.routes} />
-  )} />
+    <Route path={route.path} render={ props => (
+      <route.component {...props} routes={route.routes} />
+    )} />
 )

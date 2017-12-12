@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { getArticleListFromServe } from '../actions'
-import { ArticleTable } from './article_table'
+import ArticleTable from './article_table'
 
 class ArticlePage extends Component {
     componentDidMount () {
@@ -10,7 +10,6 @@ class ArticlePage extends Component {
 
     render() {
         const { list } = this.props
-        console.log(typeof list)
         return (
             <div>
                 <ArticleTable data={list} />

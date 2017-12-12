@@ -1,12 +1,19 @@
 import React from 'react'
 import { Table, Icon, Button } from 'semantic-ui-react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { getTime } from '../../../utils/time'
 
+const RedirectButton = ({history, path, label}) => (
+  <Button onClick={() => {
+    history.push(path)
+  }}>
+      {label}
+  </Button>
+)
 
 
 
-const ArticleRow = ({title, author, created_at, updated_at, id}) => (
+const ArticleRow = ({title, author, created_at, updated_at, id, history}) => (
     <Table.Row key={id}>
       <Table.Cell collapsing>
         <Icon name='star' /> {title}
@@ -15,18 +22,19 @@ const ArticleRow = ({title, author, created_at, updated_at, id}) => (
       <Table.Cell>{getTime(created_at)}</Table.Cell>
       <Table.Cell>{getTime(updated_at)}</Table.Cell>
       <Table.Cell>
-        <Button>
-          <Link to={{
+        {/* View Article */}
+        <RedirectButton history={history} label="View" path={{
             pathname: '/dashboard/article/' + id
-          }}>
-            View
-          </Link>
-        </Button>
+          }} />
+        {/* Update Article */}
+        <RedirectButton history={history} label="Update" path={`/dashboard/article/${id}/update`} />
       </Table.Cell>
     </Table.Row>
 )
+
+const RouterWrapRow = withRouter(ArticleRow)
   
-export const ArticleTable = ({ data }) => (
+ const ArticleTable = ({ data }) => (
   <Table celled striped>
     <Table.Header>
       <Table.Row>
@@ -44,9 +52,11 @@ export const ArticleTable = ({ data }) => (
       {
         data &&
         data.map((row, index) => (
-          <ArticleRow key={index} {...row} />
+          <RouterWrapRow key={index} {...row} />
           ))
       }
     </Table.Body>
   </Table>
 )
+
+export default withRouter(ArticleTable)
