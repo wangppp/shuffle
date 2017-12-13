@@ -10,7 +10,7 @@ import { view as Home } from "./modules/home";
 import { view as Login } from "./modules/login";
 import { loginRequiredWrapper, RouteWithSubroutes } from './components/loginWapper';
 import { ArticlePage, ArticleView, UpdateArticle } from './modules/articles'
-
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 const Subscription = () => (
   <p>New subscribers here.</p>
 );

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom';
-import { Editor } from 'draft-js'
+import { Editor } from 'react-draft-wysiwyg'
 import { getArticleContent } from '../actions'
 
 class ArticleView extends Component {
@@ -14,7 +14,7 @@ class ArticleView extends Component {
     }
     render() {
         return (
-            <div>
+            <div>   
                 <Editor readOnly 
                         editorState={this.props.article_content} />
             </div>

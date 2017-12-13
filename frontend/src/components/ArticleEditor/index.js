@@ -1,7 +1,6 @@
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState } from 'draft-js'
 import React, { Component } from 'react'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 
 class ArticleEditor extends Component {
     constructor (props) {
