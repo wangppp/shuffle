@@ -8,6 +8,8 @@ WORKDIR /go/src/github.com/wangppp/shuffle/api
 
 RUN go get ./ && go build
 
+EXPOSE 4000
+
 # 默认是开发环境，如需切换，写脚本，export APP_ENV=deveploment
 CMD if [ ${APP_ENV} = production ]; \
 	then \

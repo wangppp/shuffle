@@ -1,7 +1,12 @@
 version: "3"
 
 services:
-
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
   goapp:
     build:
       context: ./api
@@ -15,6 +20,8 @@ services:
       - db
     links:
       - db
+    environment:
+    - VIRTUAL_HOST=adminpanel.epic-think.xyz
   db:
     build: ./db
     volumes:
@@ -26,4 +33,10 @@ services:
       - POSTGRES_PASSWORD=docker
       - PGDATA=/pgdata
 
+  blog:
+    build: ./blog
+    links:
+      - goapp
+    environment:
+      - VIRTUAL_HOST=epic-think.xyz
     
