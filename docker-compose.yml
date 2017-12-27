@@ -37,6 +37,8 @@ services:
     build: ./blog
     links:
       - goapp
+    ports:
+      - "3999:3000"
     environment:
       - VIRTUAL_HOST=epic-think.xyz
     

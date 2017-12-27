@@ -1,1 +1,3 @@
 export const SET_LOGIN = 'HOME/SET_LOGIN';
+export const SET_NEW_CONTENT = 'HOME/SET_NEW_CONTENT';
+export const SET_FORM_VALUE = 'HOME/SET_FORM_VALUE';

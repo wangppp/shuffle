@@ -3,24 +3,13 @@ import { EditorState } from 'draft-js'
 import React, { Component } from 'react'
 
 class ArticleEditor extends Component {
-    constructor (props) {
-        super(props)
-        this.state = { editorState: EditorState.createEmpty() }
-        this.onEditorStateChange = (state) => {
-            this.setState({editorState: state})
-            this.props.OnChange && this.props.OnChange(state)
-        }
-        
-    }
-
     render() {
-        let { editorState } = this.state
         return (
             <Editor
-            editorState={editorState}
+            {...this.props}
             wrapperClassName="article-editor-wrapper"
             editorClassName="article-editor"
-            onEditorStateChange={this.onEditorStateChange} />
+            />
         );
     }
 }

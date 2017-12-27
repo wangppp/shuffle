@@ -2,22 +2,24 @@ package service
 
 import (
 	"encoding/json"
-	"golang.org/x/crypto/bcrypt"
-	"net/http"
-	"time"
-	"github.com/auth0/go-jwt-middleware"
-	"github.com/dgrijalva/jwt-go"
 	"log"
-	"github.com/codegangsta/negroni"
-	"github.com/wangppp/shuffle/api/config"
-	"github.com/gorilla/mux"
+	"net/http"
 	"strconv"
+	"time"
+
+	"github.com/auth0/go-jwt-middleware"
+	"github.com/codegangsta/negroni"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/go-pg/pg/orm"
+	"github.com/gorilla/mux"
+	"github.com/wangppp/shuffle/api/config"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // my token secret
 var mySigningKey = []byte("secret")
 
-var customizeMiddleware = negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+var customizeMiddleware = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	Db = GetPgOrm()
 	setCrossOriginSite(w)
 	// 手动调用下一个middleware
@@ -31,7 +33,7 @@ var customizeMiddleware = negroni.HandlerFunc(func (w http.ResponseWriter, r *ht
 
 // endMiddleWare 请求结束的中间件
 // 用于关闭数据库链接之类的
-var endMiddleWare = negroni.HandlerFunc(func (w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+var endMiddleWare = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	Db.Close()
 })
 
@@ -42,8 +44,7 @@ var jwtMiddleWare = negroni.HandlerFunc(jwtmiddleware.New(jwtmiddleware.Options{
 	SigningMethod: jwt.SigningMethodHS256,
 }).HandlerWithNext)
 
-
-// LoginHandler login 
+// LoginHandler login
 var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	// 登录校验
 	username := r.FormValue("username")
@@ -51,8 +52,8 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 
 	user := User{}
 	err := Db.Model(&user).Where("name = ?", username).
-			Limit(1).
-			Select()
+		Limit(1).
+		Select()
 
 	if err != nil {
 		httpReturnError(w, "No user or invalid password!")
@@ -67,10 +68,10 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	}
 	// 通过了登录
 	// 返回token
-	result := struct{
-		Status bool `json:"status"`
-		Token string `json:"token"`
-	} {
+	result := struct {
+		Status bool   `json:"status"`
+		Token  string `json:"token"`
+	}{
 		true, generateJWTToken(&user),
 	}
 
@@ -100,14 +101,12 @@ var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 	w.Write([]byte(tokenString))
 })
 
-
-
 // 设置跨域
 func setCrossOriginSite(w http.ResponseWriter) {
 	// set cors origin
-	crossSiteOrigin := "";
+	crossSiteOrigin := ""
 	if config.GoDev {
-		crossSiteOrigin = "http://localhost:3000"
+		crossSiteOrigin = "*"
 	}
 
 	w.Header().Add("Access-Control-Allow-Origin", crossSiteOrigin)
@@ -115,19 +114,18 @@ func setCrossOriginSite(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 }
 
-
 type PostArticle struct {
-	Title string `json:"title"`
-	Content map[string]interface{}  `json:"content"`
+	Title   string                 `json:"title"`
+	Content map[string]interface{} `json:"content"`
 }
 
 type PostUpdate struct {
-	ID string `json:"id"`
+	ID      string                 `json:"id"`
 	Content map[string]interface{} `json:"content"`
 }
 
 // SaveArticle is successfully created!
-var SaveArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var post PostArticle
 	err := decoder.Decode(&post)
@@ -137,15 +135,14 @@ var SaveArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request)
 	defer r.Body.Close()
 
 	article := Article{
-		Title: "Hello, 世界!",
-		AuthorId: 1,
-		Content: post.Content,
-		Views: 0,
-		Comments:0,
+		Title:     "Hello, 世界!",
+		AuthorId:  1,
+		Content:   post.Content,
+		Views:     0,
+		Comments:  0,
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
 	}
-
 
 	err = Db.Insert(&article)
 	if err == nil {
@@ -155,17 +152,17 @@ var SaveArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request)
 	}
 })
 
-var UpdateArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var post PostUpdate
 	err := decoder.Decode(&post)
 	handleErr(err)
 	defer r.Body.Close()
-	
+
 	id, err := strconv.Atoi(post.ID)
 
 	article := Article{
-		Id: int64(id),
+		Id:      int64(id),
 		Content: post.Content,
 	}
 
@@ -177,7 +174,7 @@ var UpdateArticle = http.HandlerFunc(func (w http.ResponseWriter, r *http.Reques
 })
 
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	var articles  []Article
+	var articles []Article
 	err := Db.Model(&articles).Column("article.id", "article.title", "article.created_at", "article.updated_at", "Author").Select()
 	handleErr(err)
 
@@ -196,4 +193,35 @@ var GetArticle = func(w http.ResponseWriter, r *http.Request) {
 	err = Db.Select(&article)
 	handleErr(err)
 	httpReturnJSON(w, article)
+}
+
+// CreateInitialTableTestV1 create table api handler test:v1
+var CreateInitialTableTestV1 = func(w http.ResponseWriter, r *http.Request) {
+	user := User{}
+	err := Db.Model(&user).
+		Where("name = ?", "Adam").
+		Limit(1).
+		Select()
+	log.Print(err)
+	if err != nil {
+		// 不存在管理员的话就新建表
+		for _, model := range []interface{}{
+			&User{},
+			&Article{},
+		} {
+			err := Db.CreateTable(model, &orm.CreateTableOptions{IfNotExists: true})
+			handleErr(err)
+		}
+
+		err := Db.Insert(&User{
+			Name:         "Adam",
+			PasswordHash: "$2a$04$w1CC5RcMTcgYk27B6DkMb.6slCJVkEH5i//0Y3kGCYh3glRU1KVOC",
+			Role:         7,
+		})
+		handleErr(err)
+		w.Write([]byte("Init table successfuly"))
+	} else {
+		w.Write([]byte("No need to init database"))
+	}
+
 }

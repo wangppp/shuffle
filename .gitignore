@@ -3,3 +3,4 @@
 /db/pgdata
 /api/tmp/
 api/tmp/runner-build
+.vscode
