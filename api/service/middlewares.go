@@ -114,16 +114,6 @@ func setCrossOriginSite(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 }
 
-type PostArticle struct {
-	Title   string                 `json:"title"`
-	Content map[string]interface{} `json:"content"`
-}
-
-type PostUpdate struct {
-	ID      string                 `json:"id"`
-	Content map[string]interface{} `json:"content"`
-}
-
 // SaveArticle is successfully created!
 var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
@@ -135,13 +125,16 @@ var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	defer r.Body.Close()
 
 	article := Article{
-		Title:     "Hello, 世界!",
+		Title:     post.HeadTitle,
+		EnTitle:   post.EnTitle,
 		AuthorId:  1,
 		Content:   post.Content,
 		Views:     0,
 		Comments:  0,
 		CreatedAt: time.Now().Unix(),
 		UpdatedAt: time.Now().Unix(),
+		Tag:       post.Tag,
+		PostState: post.PostToIndex,
 	}
 
 	err = Db.Insert(&article)
@@ -152,6 +145,7 @@ var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	}
 })
 
+// UpdateArticle 更新文章
 var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var post PostUpdate
@@ -173,6 +167,7 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	httpReturnJSON(w, jsonResponse{Status: true})
 })
 
+// GetArticles 获取所有文章的列表
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var articles []Article
 	err := Db.Model(&articles).Column("article.id", "article.title", "article.created_at", "article.updated_at", "Author").Select()
@@ -224,4 +219,15 @@ var CreateInitialTableTestV1 = func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("No need to init database"))
 	}
 
+}
+
+// GetDashboardInitialData 获取Dashboard初始化数据
+var GetDashboardInitialData = func(w http.ResponseWriter, r *http.Request) {
+	dashboardData := []tagOption{
+		{"1", "program", "编程"},
+		{"2", "literature", "文学"},
+	}
+	httpReturnJSON(w, map[string]interface{}{
+		"tag_options": dashboardData,
+	})
 }

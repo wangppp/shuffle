@@ -38,6 +38,8 @@ func initRoutes(mx *mux.Router) {
 	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticle).Methods("GET")
 	adminAPI.HandleFunc("/article/{id:[0-9]+}/update", UpdateArticle)
 
+	adminAPI.HandleFunc("/dashbord_init", GetDashboardInitialData).Methods("GET")
+
 	// 可以将一组路由看成一个模块或控制器
 	mx.PathPrefix("/api/v1/admin").Handler(negroni.New(
 		customizeMiddleware,

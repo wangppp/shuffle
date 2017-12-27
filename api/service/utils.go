@@ -1,23 +1,12 @@
 package service
 
 import (
-	"time"
-	"net/http"
 	"encoding/json"
+	"net/http"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
-
-const (
-	// ADMIN Admin role level
-	ADMIN = 7
-)
-
-type jsonResponse struct {
-	Data interface{} `json:"data"`
-	Status bool `json:"status"`
-	Message string `json:"msg"`
-}
 
 func isAdmin(role int16) bool {
 	return role == ADMIN
@@ -55,9 +44,9 @@ func httpReturnError(w http.ResponseWriter, message string) {
 }
 
 // 格式化返回结果
-func httpReturnJSON (w http.ResponseWriter, result interface{}) {
+func httpReturnJSON(w http.ResponseWriter, result interface{}) {
 	resultJSON, _ := json.Marshal(jsonResponse{result, true, ""})
-	
+
 	w.Header().Add("Content-Type", "application/json")
 	w.Write(resultJSON)
 }

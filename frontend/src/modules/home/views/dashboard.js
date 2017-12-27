@@ -4,32 +4,47 @@ import { ArticleEditor } from '../../../components/ArticleEditor';
 import http from '../../../utils/http';
 import { convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
-import { contentChange, setFormChange } from '../actions'
+import { contentChange, setFormChange, getDashboardInitData, saveNewArticle } from '../actions'
 
 class Dashboard extends Component {
-
   constructor (props) {
     super(props);
+    const { dispatchSaveArticle } = this.props;
+    // 保存文章
     this.clickSaveArticle = (e) => {
-      http.post('/admin/article', {
-        title: 'Do we Succeed!?',
-        content: convertToRaw(this.state.editorState.getCurrentContent())
-      }).then(res => {})
+      // 在点击的时候构建post，提高些性能
+      const post = {
+        ...this.props.form_value,
+        content: convertToRaw(this.props.new_article_content.getCurrentContent())
+      };
+      dispatchSaveArticle(post);
     }
+  }
+
+  componentDidMount () {
+    this.props.getDashboardData();
   }
   
   render() {
-    const { contentChange, tag_options, form_value, formFieldChange } = this.props;
-    console.log("rendered!")
+    const { contentChange, tag_options, form_value, formFieldChange, form_loading, show_success_msg } = this.props;
     return ( 
       <div >
-        <Message
-          color='blue'
-          attached
-          header='从这里开始写文章!'
-          content='Fill out the form below to sign-up for a new account'
-        />
-        <Form className='attached fluid segment'>
+        {
+          show_success_msg ? 
+          <Message
+            color='green'
+            attached
+            header='发布文章成功!'
+            content='您可以从文章版块管理保存的文章'
+          /> : 
+          <Message
+            color='blue'
+            attached
+            header='从这里开始写文章!'
+            content='记录心情，心得，经验...'
+          />
+        }
+        <Form className='attached fluid segment' loading={form_loading}>
           
           <Form.Input 
               name='head_title'
@@ -70,7 +85,7 @@ class Dashboard extends Component {
                 width={4} />
           </Form.Group>
           
-          <Button color='blue'>Submit</Button>
+          <Button disabled={show_success_msg} color='blue' onClick={this.clickSaveArticle}>Submit</Button>
         </Form>
         <Message attached='bottom' warning>
           <Icon name='help' />
@@ -82,10 +97,14 @@ class Dashboard extends Component {
 }
 
 function  mapStateToProps (state) {
+  const homeState = state.home;
   return {
-    new_article_content: state.home.new_article_content,
-    tag_options: state.home.tag_options,
-    form_value: state.home.form_value
+    new_article_content: homeState.new_article_content,
+    tag_options: homeState.tag_options,
+    form_value: homeState.form_value,
+    form_loading: homeState.form_loading,
+    // 显示保存成功状态
+    show_success_msg: homeState.show_success_msg
   }
 }
 
@@ -96,6 +115,12 @@ function mapDispatchToProps(dispatch) {
     },
     formFieldChange: (e, form_change_value_obj) => {
       dispatch(setFormChange(form_change_value_obj))
+    },
+    getDashboardData: () => {
+      dispatch(getDashboardInitData())
+    },
+    dispatchSaveArticle: (post) => {
+      dispatch(saveNewArticle(post));
     }
   }
 }

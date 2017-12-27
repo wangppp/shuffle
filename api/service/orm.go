@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/go-pg/pg"
 )
 
@@ -21,28 +22,34 @@ func (u User) String() string {
 
 // Article model struct
 type Article struct {
-	Id int64	`json:"id"`
-	Title string	`json:"title"`
-	AuthorId int64	`json:"-"`
-	Author *User	`json:"author"`
-	Content map[string]interface{} 	`json:"-"`
-	Views int64	`json:"views"`
-	Comments int64	`json:"-"`
-	CreatedAt int64	`json:"created_at"`
-	UpdatedAt int64	`json:"updated_at"`
+	Id        int64                  `json:"id"`
+	Title     string                 `json:"title"`
+	EnTitle   string                 `json:"en_title"`
+	AuthorId  int64                  `json:"-"`
+	Author    *User                  `json:"author"`
+	Content   map[string]interface{} `json:"-"`
+	Tag       string                 `json:"tag"`
+	Views     int64                  `json:"views"`
+	Comments  int64                  `json:"-"`
+	CreatedAt int64                  `json:"created_at"`
+	UpdatedAt int64                  `json:"updated_at"`
+	PostState bool                   `json:"post_state"`
 }
 
 type ViewArticle struct {
-	TableName struct{} `sql:"articles"`
-	Id int64	`json:"id"`
-	Title string	`json:"title"`
-	AuthorId int64	`json:"-"`
-	Author *User	`json:"author"`
-	Content map[string]interface{} 	`json:"content"`
-	Views int64	`json:"views"`
-	Comments int64	`json:"-"`
-	CreatedAt int64	`json:"created_at"`
-	UpdatedAt int64	`json:"updated_at"`
+	TableName struct{}               `sql:"articles"`
+	Id        int64                  `json:"id"`
+	Title     string                 `json:"title"`
+	EnTitle   string                 `json:"en_title"`
+	AuthorId  int64                  `json:"-"`
+	Author    *User                  `json:"author"`
+	Content   map[string]interface{} `json:"content"`
+	Tag       string                 `json:"tag"`
+	Views     int64                  `json:"views"`
+	Comments  int64                  `json:"-"`
+	CreatedAt int64                  `json:"created_at"`
+	UpdatedAt int64                  `json:"updated_at"`
+	PostState bool                   `json:"post_state"`
 }
 
 var Db *pg.DB
@@ -61,11 +68,8 @@ func GetPgOrm() *pg.DB {
 	return db
 }
 
-
 func handleErr(err error) {
 	if err != nil {
 		panic(err)
 	}
 }
-
-

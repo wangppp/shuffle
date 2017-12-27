@@ -37,7 +37,7 @@ export const updateExistArticle = (dispatch, id, content) => {
     return async () => {
         const { data } = await http.post(`/admin/article/${id}/update`, {
             id,
-            content: content
+            content
         })
         if (data.status === true) {
             alert("保存成功")
