@@ -170,14 +170,15 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 // GetArticles 获取所有文章的列表
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var articles []Article
-	err := Db.Model(&articles).Column("article.id", "article.title", "article.created_at", "article.updated_at", "Author").Select()
+	err := Db.Model(&articles).Column("article.id", "article.title", "article.en_title", "article.tag", "article.created_at", "article.updated_at", "Author").Select()
 	handleErr(err)
 
 	httpReturnJSON(w, articles)
 	log.Print("App request!")
 })
 
-var GetArticle = func(w http.ResponseWriter, r *http.Request) {
+// GetArticleByID 获取ID文章
+var GetArticleByID = func(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	articleID := vars["id"]
 	intID, err := strconv.Atoi(articleID)
@@ -188,6 +189,23 @@ var GetArticle = func(w http.ResponseWriter, r *http.Request) {
 	err = Db.Select(&article)
 	handleErr(err)
 	httpReturnJSON(w, article)
+}
+
+// GetArticleByTitle 根据en_title 来获取文章
+var GetArticleByTitle = func(w http.ResponseWriter, r *http.Request) {
+	enTitle := r.URL.Query().Get("en_title")
+	if enTitle != "" {
+		article := ViewArticle{}
+		err := Db.Model(&article).Where("en_title = ?", enTitle).Limit(1).Select()
+		if err != nil {
+			// handleErr(err)
+			httpReturnError(w, "文章不存在")
+			return
+		}
+		httpReturnJSON(w, article)
+		return
+	}
+	httpReturnError(w, "参数不全")
 }
 
 // CreateInitialTableTestV1 create table api handler test:v1

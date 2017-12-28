@@ -27,15 +27,16 @@ func initRoutes(mx *mux.Router) {
 	adminAPI := mux.NewRouter().PathPrefix("/api/v1/admin").Subrouter().StrictSlash(true)
 
 	// public routes handles
-	publicAPI.HandleFunc("/login", LoginHandler).Methods("POST")
-	publicAPI.HandleFunc("/createnewtable", CreateInitialTableTestV1).Methods("GET")
-	publicAPI.HandleFunc("/articles", GetArticles).Methods("GET")
+	publicAPI.HandleFunc("/login", LoginHandler).Methods("POST")                     // 用户登录
+	publicAPI.HandleFunc("/createnewtable", CreateInitialTableTestV1).Methods("GET") // dev createtable
+	publicAPI.HandleFunc("/articles", GetArticles).Methods("GET")                    // 获取文章列表
+	publicAPI.HandleFunc("/article", GetArticleByTitle).Methods("GET")               // 用title来获取某一篇文章
 
 	// admin routes handles
 	adminAPI.HandleFunc("/get-token", GetTokenHandler).Methods("GET")
 	adminAPI.HandleFunc("/article", SaveArticle).Methods("POST")
 	adminAPI.HandleFunc("/article", GetArticles).Methods("GET")
-	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticle).Methods("GET")
+	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticleByID).Methods("GET")
 	adminAPI.HandleFunc("/article/{id:[0-9]+}/update", UpdateArticle)
 
 	adminAPI.HandleFunc("/dashbord_init", GetDashboardInitialData).Methods("GET")

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "APP_ENV=development node server.js",
     "build": "next build",
-    "start": "next start",
+    "start": "APP_ENV=production node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,9 +14,11 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.17.1",
+    "draft-js": "^0.10.4",
     "express": "^4.16.2",
     "next": "^4.2.1",
     "react": "^16.2.0",
-    "react-dom": "^16.2.0"
+    "react-dom": "^16.2.0",
+    "react-draft-wysiwyg": "^1.12.2"
   }
 }

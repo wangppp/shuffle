@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Button } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import { convertToRaw } from 'draft-js'
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import { setArticleID, getArticleContent, setArticleContent, updateExistArticle } from '../actions'
 
 class UpdateArticle extends Component {

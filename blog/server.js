@@ -18,7 +18,11 @@ app.prepare()
             app.render(req, res, page, params)
         })
 
-
+        server.get('/post/:title', (req, res) => {
+            const actual_page = '/post'
+            const queryParmas = { title: req.params.title }
+            app.render(req, res, actual_page, queryParmas)
+        })
 
         server.get('*', (req, res) => {
             return handle(req, res)
