@@ -1,5 +1,5 @@
 const fetch = require('axios')
-const baseUrl = process.env.APP_ENV !== 'production' ? 'http://localhost:5000/api/v1/public' : '//goapp:4000/api/v1/public'
+const baseUrl = process.env.APP_ENV !== 'production' ? 'http://localhost:5000/api/v1/public' : 'http://goapp:4000/api/v1/public'
 // const baseUrl = 'http://localhost:5000/api/v1/public'
 
 function getUrl(url) {
