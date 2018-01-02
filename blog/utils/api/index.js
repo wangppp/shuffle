@@ -1,10 +1,14 @@
 const fetch = require('axios')
+const isDev = process.env.APP_ENV !== 'production' ? true : false
 const isServer = typeof window === 'undefined' ? true : false
 const serverBaseUrl = 'http://goapp:4000/api/v1/public'
 const clientBaseUrl = 'http://adminpanel.epic-think.xyz/api/v1/public'
 // const baseUrl = 'http://localhost:5000/api/v1/public'
 
 function getUrl(url) {
+    if (isDev) {
+        return `http://localhost:5000/api/v1/public${url}`;
+    }
     return isServer ? `${serverBaseUrl}${url}` : `${clientBaseUrl}${url}`
 }
 

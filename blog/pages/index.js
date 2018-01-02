@@ -13,11 +13,11 @@ const PostLink = ({title, en_title}) => (
 const Index = ({ articles }) => (
     <Layout>
         <h2>
-            Hello, World!
+           近期文章
         </h2>
         {articles.map(at => (
             <div key={at.id}>
-                <PostLink title={at.title} en_title={at.en_title} /> - 作者: {at.author.name}
+                <PostLink title={at.title} en_title={at.en_title} />
             </div>
         ))}
     </Layout>

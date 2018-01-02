@@ -2,20 +2,15 @@ import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, convertFromRaw } from 'draft-js'
 import { getArticleByEnTitle } from '../utils/api'
 import { Component } from 'react'
+import Layout from '../comps/Layout'
+import styled from 'styled-components'
+import { getTime } from '../utils/time'
 
-const Post = ({ article_obj, article_content}) => (
-    <div>
-        <Editor
-            editorKey="editor"
-            readOnly
-            toolbar={{
-                options: []
-            }}
-            toolbarHidden={true}
-            editorState={article_content}
-        />
-    </div>
-)
+const SmallTitle = styled.div`
+    color: #333;
+    font-size: 12px;
+    margin-bottom: 20px;
+`
 
 class PostContent extends Component {
     constructor (props) {
@@ -25,7 +20,13 @@ class PostContent extends Component {
         const { article_obj, article_content } = this.props
         const new_state = EditorState.createWithContent(convertFromRaw(article_content))
         return (
-            <div>
+            <Layout>
+                <div>
+                    <h3>
+                        {article_obj.title}
+                    </h3>
+                    <SmallTitle>发布于 {getTime(article_obj.created_at)}</SmallTitle>
+                </div>
                 <Editor
                     editorKey="foo"
                     readOnly
@@ -34,7 +35,7 @@ class PostContent extends Component {
                     }}
                     toolbarHidden={true}
                     editorState={new_state} />
-            </div>
+            </Layout>
         );
     }
 }

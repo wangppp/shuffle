@@ -16,9 +16,14 @@
     "axios": "^0.17.1",
     "draft-js": "^0.10.4",
     "express": "^4.16.2",
+    "moment": "^2.20.1",
     "next": "^4.2.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-draft-wysiwyg": "^1.12.2"
+    "react-draft-wysiwyg": "^1.12.2",
+    "styled-components": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.4.0"
   }
 }
