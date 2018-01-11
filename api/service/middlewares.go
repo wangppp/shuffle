@@ -78,8 +78,8 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	httpReturnJSON(w, result)
 })
 
-// GetTokenHandler 将穿进去的匿名函数转化为HandlerFunc 类型, 实际上是一个类型转化过程
-var GetTokenHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// GetTokenHandlerAfterLogin 将穿进去的匿名函数转化为HandlerFunc 类型, 实际上是一个类型转化过程
+var GetTokenHandlerAfterLogin = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	// 本地登录使用用户名和密码哈哈,
 	// 如果数据库存储了用户名和密码，那么验证匹配，如果匹配则
 	// 签发jwt token

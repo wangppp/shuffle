@@ -33,7 +33,7 @@ func initRoutes(mx *mux.Router) {
 	publicAPI.HandleFunc("/article", GetArticleByTitle).Methods("GET")               // 用title来获取某一篇文章
 
 	// admin routes handles
-	adminAPI.HandleFunc("/get-token", GetTokenHandler).Methods("GET")
+	adminAPI.HandleFunc("/get-token", GetTokenHandlerAfterLogin).Methods("GET")
 	adminAPI.HandleFunc("/article", SaveArticle).Methods("POST")
 	adminAPI.HandleFunc("/article", GetArticles).Methods("GET")
 	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticleByID).Methods("GET")

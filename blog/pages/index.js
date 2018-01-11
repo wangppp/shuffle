@@ -1,13 +1,22 @@
 import Layout from '../comps/Layout'
 import { getArticles } from '../utils/api'
+import styled from 'styled-components'
 import Link from 'next/link'
 
+const PainLink = styled.a`
+    cursor: pointer;
+`
+const LinkWrapper = styled.div`
+    font-size: 16px;
+    margin: 10px 0px;
+`
+
 const PostLink = ({title, en_title}) => (
-    <li>
+    <LinkWrapper>
       <Link as={`/post/${en_title}`} href={`/post?title=${en_title}`}>
-        <a>{title}</a>
+        <PainLink>{title}</PainLink>
       </Link>
-    </li>
+    </LinkWrapper>
   )
 
 const Index = ({ articles }) => (
