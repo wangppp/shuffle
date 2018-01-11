@@ -127,6 +127,7 @@ var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	article := Article{
 		Title:     post.HeadTitle,
 		EnTitle:   post.EnTitle,
+		HeroImg:   post.HeroImg,
 		AuthorId:  1,
 		Content:   post.Content,
 		Views:     0,

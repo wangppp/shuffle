@@ -1,4 +1,4 @@
-import { SET_LOGIN, SET_NEW_CONTENT, SET_FORM_VALUE, OPEN_DASHBOARD_LOADING, CLOSE_DASHBOARD_LOADING, SET_TAG_OPTIONS, EMPTY_FORM_VALUE, SHOW_SUCCESS_MSG, HIDE_SUCCESS_MSG } from './actionTypes';
+import { SET_LOGIN, SET_NEW_CONTENT, SET_FORM_VALUE, OPEN_DASHBOARD_LOADING, CLOSE_DASHBOARD_LOADING, SET_TAG_OPTIONS, EMPTY_FORM_VALUE, SHOW_SUCCESS_MSG, HIDE_SUCCESS_MSG, SET_HERO_IMG } from './actionTypes';
 import { isLogin } from '../../utils/auth';
 import { EditorState } from 'draft-js';
 
@@ -6,6 +6,7 @@ const cloneDeep = require('lodash/cloneDeep');
 const emptyForm = {
   head_title: '',
   en_title: '',
+  hero_img: '',
   tag: '',
   post_to_index: true
 };
@@ -91,6 +92,7 @@ export default (state = {
         form_value
       };
     }
+    // 
     default:
       return state;
   }

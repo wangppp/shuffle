@@ -2,6 +2,7 @@ package service
 
 type PostArticle struct {
 	HeadTitle   string                 `json:"head_title"`
+	HeroImg string	`json:"hero_img"`
 	EnTitle     string                 `json:"en_title"`
 	Tag         string                 `json:"tag"`
 	PostToIndex bool                   `json:"post_to_index"`

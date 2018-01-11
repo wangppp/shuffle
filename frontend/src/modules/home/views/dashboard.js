@@ -6,6 +6,17 @@ import { convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
 import { contentChange, setFormChange, getDashboardInitData, saveNewArticle } from '../actions'
 
+// 输入图片地址显示图片
+const HeroImgInput = ({ heroImg, onChange }) => (
+  <div>
+    { 
+      heroImg === '' ?
+      <Form.Input onChange={onChange} type="text" placeholder="粘贴图片地址"/> :
+      <img style={{width: "100%"}} src={heroImg} />
+    }
+  </div>
+)
+
 class Dashboard extends Component {
   constructor (props) {
     super(props);
@@ -26,9 +37,9 @@ class Dashboard extends Component {
   }
   
   render() {
-    const { contentChange, tag_options, form_value, formFieldChange, form_loading, show_success_msg } = this.props;
+    const { contentChange, tag_options, form_value, formFieldChange, form_loading, show_success_msg, hero_img } = this.props;
     return ( 
-      <div >
+      <div>
         {
           show_success_msg ? 
           <Message
@@ -37,28 +48,31 @@ class Dashboard extends Component {
             header='发布文章成功!'
             content='您可以从文章版块管理保存的文章'
           /> : 
-          <Message
-            color='blue'
-            attached
-            header='从这里开始写文章!'
-            content='记录心情，心得，经验...'
-          />
+          null
         }
         <Form className='attached fluid segment' loading={form_loading}>
           
+          {
+            form_value.hero_img.trim() === '' ?
+            <Form.Input 
+              name='hero_img'
+              value={form_value.hero_img}
+              placeholder='粘贴封面图片地址'
+              onChange={formFieldChange}
+              type='text' /> :
+            <img style={{width: "100%"}} src={form_value.hero_img} />
+          }
           <Form.Input 
               name='head_title'
               value={form_value.head_title}
-              label='文章标题'
-              placeholder='不超过100字'
+              placeholder='文章标题'
               onChange={formFieldChange}
               type='text' />
           <Form.Input 
               name='en_title'
               value={form_value.en_title}
-              label='文章英文title'
               onChange={formFieldChange}
-              placeholder='不超过100字'
+              placeholder='文章英文title'
               type='text' />
 
           <ArticleEditor 

@@ -24,6 +24,7 @@ func (u User) String() string {
 type Article struct {
 	Id        int64                  `json:"id"`
 	Title     string                 `json:"title"`
+	HeroImg		string			`json:"hero_img"`
 	EnTitle   string                 `json:"en_title"`
 	AuthorId  int64                  `json:"-"`
 	Author    *User                  `json:"author"`
@@ -40,6 +41,7 @@ type ViewArticle struct {
 	TableName struct{}               `sql:"articles"`
 	Id        int64                  `json:"id"`
 	Title     string                 `json:"title"`
+	HeroImg		string			`json:"hero_img"`
 	EnTitle   string                 `json:"en_title"`
 	AuthorId  int64                  `json:"-"`
 	Author    *User                  `json:"author"`

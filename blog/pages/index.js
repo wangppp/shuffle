@@ -1,4 +1,4 @@
-import Layout from '../comps/Layout'
+import Layout, { MiddleLayout, PaddingGap } from '../comps/Layout'
 import { getArticles } from '../utils/api'
 import styled from 'styled-components'
 import Link from 'next/link'
@@ -11,6 +11,8 @@ const LinkWrapper = styled.div`
     margin: 10px 0px;
 `
 
+
+
 const PostLink = ({title, en_title}) => (
     <LinkWrapper>
       <Link as={`/post/${en_title}`} href={`/post?title=${en_title}`}>
@@ -21,14 +23,17 @@ const PostLink = ({title, en_title}) => (
 
 const Index = ({ articles }) => (
     <Layout>
-        <h2>
-           近期文章
-        </h2>
-        {articles.map(at => (
-            <div key={at.id}>
-                <PostLink title={at.title} en_title={at.en_title} />
-            </div>
-        ))}
+        <PaddingGap />
+        <MiddleLayout>
+            <h2>
+            近期文章
+            </h2>
+            {articles.map(at => (
+                <div key={at.id}>
+                    <PostLink title={at.title} en_title={at.en_title} />
+                </div>
+            ))}
+        </MiddleLayout>
     </Layout>
 )
 

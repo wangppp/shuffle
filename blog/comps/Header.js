@@ -2,7 +2,6 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import NProgress from 'nprogress'
 import Router from 'next/router'
-import Head from 'next/head'
 
 // Router change with progress bar animation
 Router.onRouteChangeStart = url => {
@@ -13,25 +12,33 @@ Router.onRouteChangeComplete = () => NProgress.done()
 
 Router.onRouteChangeError = () => NProgress.done()
 
-
-
 const HeaderDiv = styled.div`
-    margin: 2em auto;
+    width: 100%;
+    background-color: rgba(0,0,0,0.05);
+    position: fixed;
+    top: 0;
 `
 const StyledLink = styled.a`
-    color: rgba(0,0,0,0.75);
-    font-weight: 400;
+    color: ${props => {
+        return props.primary === true ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.75)";
+    }};
+    font-weight: 500;
     font-size: 15px;
     cursor: pointer;
-    padding: 10px 10px;
     letter-spacing: 0.5px;
     font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif!important;
-    transition: background 0.3s ease;
     margin-right: 10px;
+    height: 56px;
+    display: inline-block;
+    line-height: 56px;
+    vertical-align: top;
     &:hover {
-        color: white;
-        background-color: orange;
-  }
+        color: ${props => {
+            return props.primary === true ? "rgba(255,255,255,1)" : "rgba(0,0,0,1)";
+        }};
+        /* background-color: orange; */
+    }
+    
 `
 const LogoDiv = styled.div`
     padding: 10px;
@@ -45,20 +52,16 @@ const LogoDiv = styled.div`
     margin-right: 40px;
 `
 
-const Header = () => (
+const Header = ({ primary }) => (
     <HeaderDiv>
-        <Head>
-            {/* Import CSS for nprogress */}
-            <link rel='stylesheet' type='text/css' href='/static/nprogress.css' />
-        </Head>
         <Link href='/'>
             <LogoDiv>W</LogoDiv>
         </Link>
         <Link href='/'>
-            <StyledLink>Home</StyledLink>
+            <StyledLink primary={primary}>Home</StyledLink>
         </Link>
         <Link href='/about'>
-            <StyledLink>About</StyledLink>
+            <StyledLink primary={primary}>About</StyledLink>
         </Link>
     </HeaderDiv>
 )

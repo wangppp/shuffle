@@ -1,4 +1,4 @@
-import Layout from '../comps/Layout'
+import Layout, { MiddleLayout, PaddingGap } from '../comps/Layout'
 
 const HeadLine = () => (
     <h5>Email: adamwang@gmail.com</h5>
@@ -6,8 +6,11 @@ const HeadLine = () => (
 
 const About = () => (
     <Layout>
-        <p>Please tell me your thoughts about this site.</p>
-        <HeadLine/>
+        <PaddingGap />
+        <MiddleLayout>
+            <p>Please tell me your thoughts about this site.</p>
+            <HeadLine/>
+        </MiddleLayout>
     </Layout>
 )
 

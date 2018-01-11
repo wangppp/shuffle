@@ -28,7 +28,7 @@ app.prepare()
             return handle(req, res)
         })
         const port = dev ? 4000 : 3000
-        server.listen(port, err => {
+        server.listen(port, '192.168.188.233', err => {
             if (err) throw err
             console.log(`> Ready on http://localhost:${port}`)
         })

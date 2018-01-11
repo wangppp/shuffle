@@ -1,5 +1,8 @@
 /* Make clicks pass-through */
-
+html, body{
+    margin: 0;
+    padding: 0;
+}
 #nprogress {
     pointer-events: none;
 }
