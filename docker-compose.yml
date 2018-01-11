@@ -41,4 +41,5 @@ services:
       - "3999:3000"
     environment:
       - VIRTUAL_HOST=epic-think.xyz
+      - APP_ENV=production
     
