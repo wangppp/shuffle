@@ -6,11 +6,18 @@ import {
   Route
 } from 'react-router-dom';
 import { connect } from "react-redux";
-import { view as Home } from "./modules/home";
-import { view as Login } from "./modules/login";
 import { loginRequiredWrapper, RouteWithSubroutes } from './components/loginWapper';
-import { ArticlePage, ArticleView, UpdateArticle } from './modules/articles'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
+// code splitting, 动态加载组件
+import asyncComponent from './utils/load';
+
+const Home = asyncComponent(() => import('./modules/home/views'));
+const Login = asyncComponent(() => import('./modules/login/view'));
+const ArticlePage = asyncComponent(() => import('./modules/articles/views'));
+const ArticleView = asyncComponent(() => import('./modules/articles/views/article_view'));
+const UpdateArticle = asyncComponent(() => import('./modules/articles/views/article_update'));
+
+
 const Subscription = () => (
   <p>New subscribers here.</p>
 );
