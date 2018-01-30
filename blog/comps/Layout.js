@@ -3,6 +3,11 @@ import styled from 'styled-components'
 
 const LayoutDiv = styled.div`
     width: 100%;
+    /* background-image: url('/static/imgs/sparks.jpeg'); */
+    min-height: 100vh;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 `
 
 const MiddleLayout = styled.div`

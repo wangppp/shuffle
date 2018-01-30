@@ -14,55 +14,59 @@ Router.onRouteChangeError = () => NProgress.done()
 
 const HeaderDiv = styled.div`
     width: 100%;
-    background-color: rgba(0,0,0,0.05);
+    height: 46px;
+    background-color: #0085be;
     position: fixed;
     top: 0;
 `
 const StyledLink = styled.a`
-    color: ${props => {
-        return props.primary === true ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.75)";
-    }};
+    color: white;
+    padding: 0 10px;
     font-weight: 500;
-    font-size: 15px;
+    font-size: 0.9 rem;
     cursor: pointer;
     letter-spacing: 0.5px;
     font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif!important;
     margin-right: 10px;
-    height: 56px;
+    height: 46px;
     display: inline-block;
-    line-height: 56px;
-    vertical-align: top;
+    line-height: 46px;
+    transition: background 100ms ease-in-out, color 80ms ease-in-out;
     &:hover {
-        color: ${props => {
-            return props.primary === true ? "rgba(255,255,255,1)" : "rgba(0,0,0,1)";
-        }};
+        background: #00aadc;
+        color: white;
+        cursor: pointer;
+        box-shadow: inset 0 -2px rgba(0, 86, 132, 0.2);
         /* background-color: orange; */
     }
-    
 `
 const LogoDiv = styled.div`
-    padding: 10px;
-    background-color: rgba(0,0,0,0.75);
+    width: 46px;
+    height: 46px;
+    background-image: url(/static/imgs/logo.png);
+    background-size: cover;
     display: inline-block;
-    font-size: 36px;
-    color: rgba(255,255,255, 0.75);
-    line-height: 36px;
     cursor: pointer;
-    font-family: medium-content-serif-font,Georgia,Cambria,"Times New Roman",Times,serif;
     margin-right: 40px;
+`
+
+const LinksWrapper = styled.nav`
+    float: right;
 `
 
 const Header = ({ primary }) => (
     <HeaderDiv>
         <Link href='/'>
-            <LogoDiv>W</LogoDiv>
+            <LogoDiv />
         </Link>
-        <Link href='/'>
-            <StyledLink primary={primary}>Home</StyledLink>
-        </Link>
-        <Link href='/about'>
-            <StyledLink primary={primary}>About</StyledLink>
-        </Link>
+        <LinksWrapper>
+            <Link href='/'>
+                <StyledLink primary={primary}>Home</StyledLink>
+            </Link>
+            <Link href='/about'>
+                <StyledLink primary={primary}>About</StyledLink>
+            </Link>
+        </LinksWrapper>
     </HeaderDiv>
 )
 
