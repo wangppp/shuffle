@@ -19,7 +19,7 @@ const AuthBar = ({ loginAsync, username, password, setUserName, setPassword}) =>
       >
         <Grid.Column style={{ maxWidth: 450 }}>
           <Header as='h1' color='teal' textAlign='center'>
-            Welcome! Log in to continue...
+            欢迎来到 Shuffle 后台管理中心
           </Header>
           <Form size='large' className='attached fluid segment'>
               <Form.Input
@@ -39,6 +39,15 @@ const AuthBar = ({ loginAsync, username, password, setUserName, setPassword}) =>
                 placeholder='Password'
                 type='password'
               />
+
+              <Form.Input
+                fluid
+                icon='lock'
+                iconPosition='left'
+                placeholder='短信验证码'
+                type='text'
+              />
+              
 
               <Form.Button color='teal' fluid size='large' onClick={() => {
                 loginAsync({username, password})

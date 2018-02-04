@@ -8,7 +8,7 @@ import (
 
 // User user model
 type User struct {
-	Id           int64    `json:"-"`
+	ID           int64    `json:"-"`
 	Name         string   `json:"name"`
 	Emails       []string `json:"-"`
 	PasswordSalt string   `json:"-"`
@@ -17,16 +17,16 @@ type User struct {
 }
 
 func (u User) String() string {
-	return fmt.Sprintf("User<%d %s %v>", u.Id, u.Name, u.Emails)
+	return fmt.Sprintf("User<%d %s %v>", u.ID, u.Name, u.Emails)
 }
 
 // Article model struct
 type Article struct {
-	Id        int64                  `json:"id"`
+	ID        int64                  `json:"id"`
 	Title     string                 `json:"title"`
-	HeroImg		string			`json:"hero_img"`
+	HeroImg   string                 `json:"hero_img"`
 	EnTitle   string                 `json:"en_title"`
-	AuthorId  int64                  `json:"-"`
+	AuthorID  int64                  `json:"-"`
 	Author    *User                  `json:"author"`
 	Content   map[string]interface{} `json:"-"`
 	Tag       string                 `json:"tag"`
@@ -37,13 +37,14 @@ type Article struct {
 	PostState bool                   `json:"post_state"`
 }
 
+// ViewArticle table orm model
 type ViewArticle struct {
 	TableName struct{}               `sql:"articles"`
-	Id        int64                  `json:"id"`
+	ID        int64                  `json:"id"`
 	Title     string                 `json:"title"`
-	HeroImg		string			`json:"hero_img"`
+	HeroImg   string                 `json:"hero_img"`
 	EnTitle   string                 `json:"en_title"`
-	AuthorId  int64                  `json:"-"`
+	AuthorID  int64                  `json:"-"`
 	Author    *User                  `json:"author"`
 	Content   map[string]interface{} `json:"content"`
 	Tag       string                 `json:"tag"`
@@ -54,8 +55,15 @@ type ViewArticle struct {
 	PostState bool                   `json:"post_state"`
 }
 
+// LoginToken table orm model
+type LoginToken struct {
+	TableName struct{} `sql:"logintokens"`
+}
+
+// Db 全局的数据库链接
 var Db *pg.DB
 
+// GetPgOrm 获取数据库链接对象
 func GetPgOrm() *pg.DB {
 	// Use Middleware to close db
 	db := pg.Connect(&pg.Options{

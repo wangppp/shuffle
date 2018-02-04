@@ -23,7 +23,7 @@ var customizeMiddleware = negroni.HandlerFunc(func(w http.ResponseWriter, r *htt
 	Db = GetPgOrm()
 	setCrossOriginSite(w)
 	// 手动调用下一个middleware
-	if r.Method != "OPTIONS" {
+	if r.Method != http.MethodOptions {
 		next(w, r)
 	} else {
 		w.WriteHeader(http.StatusOK)
@@ -128,7 +128,7 @@ var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 		Title:     post.HeadTitle,
 		EnTitle:   post.EnTitle,
 		HeroImg:   post.HeroImg,
-		AuthorId:  1,
+		AuthorID:  1,
 		Content:   post.Content,
 		Views:     0,
 		Comments:  0,
@@ -157,7 +157,7 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	id, err := strconv.Atoi(post.ID)
 
 	article := Article{
-		Id:      int64(id),
+		ID:      int64(id),
 		Content: post.Content,
 	}
 
@@ -185,7 +185,7 @@ var GetArticleByID = func(w http.ResponseWriter, r *http.Request) {
 	intID, err := strconv.Atoi(articleID)
 	handleErr(err)
 	article := ViewArticle{
-		Id: int64(intID),
+		ID: int64(intID),
 	}
 	err = Db.Select(&article)
 	handleErr(err)
