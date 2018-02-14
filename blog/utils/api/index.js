@@ -6,9 +6,9 @@ const clientBaseUrl = 'http://adminpanel.epic-think.xyz/api/v1/public'
 // const baseUrl = 'http://localhost:5000/api/v1/public'
 
 function getUrl(url) {
-    // if (isDev) {
-    //     return `http://localhost:5000/api/v1/public${url}`;
-    // }
+    if (isDev) {
+        return `http://localhost:5000/api/v1/public${url}`;
+    }
     return isServer ? `${serverBaseUrl}${url}` : `${clientBaseUrl}${url}`
 }
 

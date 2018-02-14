@@ -28,6 +28,8 @@ func initRoutes(mx *mux.Router) {
 
 	// public routes handles
 	publicAPI.HandleFunc("/login", LoginHandler).Methods("POST")                     // 用户登录
+	// 请求短信验证码
+	publicAPI.HandleFunc("/login_sms_token", GetSmsToken).Methods("POST")
 	publicAPI.HandleFunc("/createnewtable", CreateInitialTableTestV1).Methods("GET") // dev createtable
 	publicAPI.HandleFunc("/articles", GetArticles).Methods("GET")                    // 获取文章列表
 	publicAPI.HandleFunc("/article", GetArticleByTitle).Methods("GET")               // 用title来获取某一篇文章

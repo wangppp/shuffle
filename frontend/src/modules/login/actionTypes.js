@@ -1,2 +1,4 @@
 export const SET_USERNAME = 'LOGIN/SET_USERNAME';
 export const SET_PASSWORD = 'LOGIN/SET_PASSWORD';
+export const SET_SMS_SENT = 'LOGIN/SET_SMS_SENT';
+export const SET_LOADING = 'LOGIN/LOADING';

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import styled from 'styled-components'
+import styled, {css} from 'styled-components'
 import NProgress from 'nprogress'
 import Router from 'next/router'
 
@@ -15,15 +15,16 @@ Router.onRouteChangeError = () => NProgress.done()
 const HeaderDiv = styled.div`
     width: 100%;
     height: 46px;
-    background-color: #0085be;
+    background-color: #fefefe;
+    box-shadow: 0 0 4px rgba(0,0,0,.12), 0 4px 4px rgba(0,0,0,.1);
     position: fixed;
     top: 0;
-`
+`;
 const StyledLink = styled.a`
-    color: white;
-    padding: 0 10px;
-    font-weight: 500;
-    font-size: 0.9 rem;
+    color: rgba(0,0,0,.54);
+    padding: 0 24px;
+    font-weight: 400;
+    font-size: 14px;
     cursor: pointer;
     letter-spacing: 0.5px;
     font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Arial,sans-serif!important;
@@ -31,19 +32,23 @@ const StyledLink = styled.a`
     height: 46px;
     display: inline-block;
     line-height: 46px;
-    transition: background 100ms ease-in-out, color 80ms ease-in-out;
+    border-bottom: 2px solid transparent;
+    box-sizing: border-box;
     &:hover {
-        background: #00aadc;
-        color: white;
+        color: rgba(0,0,0,.87);
         cursor: pointer;
-        box-shadow: inset 0 -2px rgba(0, 86, 132, 0.2);
-        /* background-color: orange; */
     }
+    
+    ${props => props.primary && css`
+        border-bottom-color: #0277bd;
+        color: #3c4367;
+        font-weight: 500;
+    `}
 `
 const LogoDiv = styled.div`
-    width: 46px;
+    width: 246px;
     height: 46px;
-    background-image: url(/static/imgs/logo.png);
+    background-image: url('/static/imgs/logo-text.png');
     background-size: cover;
     display: inline-block;
     cursor: pointer;
@@ -54,18 +59,28 @@ const LinksWrapper = styled.nav`
     float: right;
 `
 
-const Header = ({ primary }) => (
+const Header = ({primary}) => (
     <HeaderDiv>
         <Link href='/'>
-            <LogoDiv />
+            <LogoDiv/>
         </Link>
         <LinksWrapper>
             <Link href='/'>
-                <StyledLink primary={primary}>Home</StyledLink>
+                <StyledLink primary={true}>主页</StyledLink>
             </Link>
             <Link href='/about'>
-                <StyledLink primary={primary}>About</StyledLink>
+                <StyledLink>文章</StyledLink>
             </Link>
+            <Link href='/about'>
+                <StyledLink>视频</StyledLink>
+            </Link>
+            <Link href='/about'>
+                <StyledLink>产品</StyledLink>
+            </Link>
+            <Link href='/about'>
+                <StyledLink>合作</StyledLink>
+            </Link>
+
         </LinksWrapper>
     </HeaderDiv>
 )

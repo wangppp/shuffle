@@ -15,7 +15,7 @@ export default class MyDocument extends Document {
         <Head>
           <title>Blog</title>
           {/* Import CSS for nprogress */}
-          <link rel='stylesheet' type='text/css' href='/static/css/nprogress.css' />
+          <link rel='stylesheet' type='text/css' href='/static/css/site.css' />
           {this.props.styleTags}
         </Head>
         <body>

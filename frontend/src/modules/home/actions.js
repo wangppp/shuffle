@@ -1,6 +1,5 @@
 import { SET_LOGIN, SET_NEW_CONTENT, SET_FORM_VALUE, OPEN_DASHBOARD_LOADING, CLOSE_DASHBOARD_LOADING, SET_TAG_OPTIONS, EMPTY_FORM_VALUE, SHOW_SUCCESS_MSG, HIDE_SUCCESS_MSG } from "./actionTypes";
 import http from '../../utils/http';
-import { EditorState, convertToRaw } from 'draft-js';
 
 function wait(time) {
   return new Promise((resolve) => {

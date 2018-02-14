@@ -20,6 +20,17 @@ func (u User) String() string {
 	return fmt.Sprintf("User<%d %s %v>", u.ID, u.Name, u.Emails)
 }
 
+// LoginToken table model struct 短信token等登录信息表
+type LoginToken struct {
+	TableName struct{} `sql:"logintokens"`
+	ID int64 `json:"id"`
+	User *User `json:"user"`
+	UserID int64 `json:"user_id"`
+	SmsToken string `json:"sms_token"`
+	SmsExpire int64 `json:"sms_expire"`
+}
+
+
 // Article model struct
 type Article struct {
 	ID        int64                  `json:"id"`
@@ -55,10 +66,7 @@ type ViewArticle struct {
 	PostState bool                   `json:"post_state"`
 }
 
-// LoginToken table orm model
-type LoginToken struct {
-	TableName struct{} `sql:"logintokens"`
-}
+
 
 // Db 全局的数据库链接
 var Db *pg.DB

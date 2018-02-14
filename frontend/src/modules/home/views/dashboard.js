@@ -1,21 +1,10 @@
 import React, { Component } from 'react';
 import { Button, Form, Icon, Message } from 'semantic-ui-react';
 import { ArticleEditor } from '../../../components/ArticleEditor';
-import http from '../../../utils/http';
 import { convertToRaw } from 'draft-js';
 import { connect } from 'react-redux';
 import { contentChange, setFormChange, getDashboardInitData, saveNewArticle } from '../actions'
 
-// 输入图片地址显示图片
-const HeroImgInput = ({ heroImg, onChange }) => (
-  <div>
-    { 
-      heroImg === '' ?
-      <Form.Input onChange={onChange} type="text" placeholder="粘贴图片地址"/> :
-      <img style={{width: "100%"}} src={heroImg} />
-    }
-  </div>
-)
 
 class Dashboard extends Component {
   constructor (props) {
@@ -37,7 +26,7 @@ class Dashboard extends Component {
   }
   
   render() {
-    const { contentChange, tag_options, form_value, formFieldChange, form_loading, show_success_msg, hero_img } = this.props;
+    const { contentChange, tag_options, form_value, formFieldChange, form_loading, show_success_msg } = this.props;
     return ( 
       <div>
         {
@@ -50,8 +39,9 @@ class Dashboard extends Component {
           /> : 
           null
         }
-        <Form className='attached fluid segment' loading={form_loading}>
-          
+        <Form
+          className='attached fluid segment'
+          loading={form_loading} >
           {
             form_value.hero_img.trim() === '' ?
             <Form.Input 
@@ -60,7 +50,10 @@ class Dashboard extends Component {
               placeholder='粘贴封面图片地址'
               onChange={formFieldChange}
               type='text' /> :
-            <img style={{width: "100%"}} src={form_value.hero_img} />
+            <img
+              alt="article hero"
+              style={{width: "100%"}}
+              src={form_value.hero_img} />
           }
           <Form.Input 
               name='head_title'

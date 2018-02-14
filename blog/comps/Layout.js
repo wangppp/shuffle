@@ -11,7 +11,7 @@ const LayoutDiv = styled.div`
 `
 
 const MiddleLayout = styled.div`
-    max-width: 1000px;
+    max-width: 1350px;
     margin-left: auto;
     margin-right: auto;
 `

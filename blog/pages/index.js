@@ -1,4 +1,5 @@
 import Layout, { MiddleLayout, PaddingGap } from '../comps/Layout'
+import HeroContent from '../comps/HeroContent'
 import { getArticles } from '../utils/api'
 import styled from 'styled-components'
 import Link from 'next/link'
@@ -25,14 +26,17 @@ const Index = ({ articles }) => (
     <Layout>
         <PaddingGap />
         <MiddleLayout>
-            <h2>
-            近期文章
-            </h2>
-            {articles.map(at => (
-                <div key={at.id}>
-                    <PostLink title={at.title} en_title={at.en_title} />
-                </div>
-            ))}
+            <HeroContent />
+            <div>
+                <h2>
+                    近期文章
+                </h2>
+                {articles.map(at => (
+                    <div key={at.id}>
+                        <PostLink title={at.title} en_title={at.en_title} />
+                    </div>
+                ))}
+            </div>
         </MiddleLayout>
     </Layout>
 )

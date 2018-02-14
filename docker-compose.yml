@@ -8,6 +8,8 @@ services:
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
   goapp:
+    env_file:
+      - ./api/goapp.env
     build:
       context: ./api
       args:

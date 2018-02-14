@@ -114,6 +114,51 @@ func setCrossOriginSite(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 }
 
+//
+var GetSmsToken = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("username")
+	user := User{}
+	err := Db.Model(&user).Where("name = ?", username).
+			Limit(1).
+			Select()
+	if err != nil {
+		httpReturnError(w, "user is not existed")
+		panic(nil)
+	}
+	loginToken := LoginToken{UserID:user.ID}
+	userExistErr := Db.Model(&loginToken).Select()
+	newExpiredTime := time.Now().Add(time.Minute * 10).Unix()
+	if userExistErr != nil || loginToken.SmsExpire < newExpiredTime {
+		// 不存在token，新建token
+		token := getRandIntToken(6)
+		// 设置10 min
+		loginToken.SmsExpire = newExpiredTime
+		loginToken.SmsToken = token
+		err = sendSMS("Your login sms code: " + token + ", valid in 10 minutes");
+		if err != nil {
+			httpReturnError(w, "sms error")
+			panic(nil)
+		}
+		// 如果存在了token record
+		if userExistErr == nil {
+			_, err = Db.Model(loginToken).Set("sms_token = ?sms_token").
+				Where("user_id = ?user_id").Update()
+			if err != nil {
+				httpReturnError(w, "update token err")
+				panic(err)
+			}
+		} else {
+			// 不存在则插入
+			err = Db.Insert(&loginToken)
+			if err != nil {
+				httpReturnError(w, "save token err")
+				panic(nil)
+			}
+		}
+	}
+	httpReturnJSON(w, "sms sent to your phone")
+})
+
 // SaveArticle is successfully created!
 var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)

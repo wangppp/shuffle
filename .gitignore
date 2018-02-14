@@ -4,3 +4,4 @@
 /api/tmp/
 api/tmp/runner-build
 .vscode
+api/*env

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Table, Icon, Button } from 'semantic-ui-react'
-import { Link, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import { getTime } from '../../../utils/time'
 
 const RedirectButton = ({history, path, label}) => (
