@@ -27,7 +27,8 @@ func initRoutes(mx *mux.Router) {
 	adminAPI := mux.NewRouter().PathPrefix("/api/v1/admin").Subrouter().StrictSlash(true)
 
 	// public routes handles
-	publicAPI.HandleFunc("/login", LoginHandler).Methods("POST")                     // 用户登录
+	publicAPI.HandleFunc("/login", LoginHandler).Methods("POST") // 用户登录
+	publicAPI.HandleFunc("/initial-data", GetInitialData).Methods("GET")
 	// 请求短信验证码
 	publicAPI.HandleFunc("/login_sms_token", GetSmsToken).Methods("POST")
 	publicAPI.HandleFunc("/createnewtable", CreateInitialTableTestV1).Methods("GET") // dev createtable

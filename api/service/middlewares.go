@@ -114,18 +114,18 @@ func setCrossOriginSite(w http.ResponseWriter) {
 	w.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 }
 
-//
+// GetSmsToken 用户获取短信验证码
 var GetSmsToken = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	username := r.FormValue("username")
 	user := User{}
 	err := Db.Model(&user).Where("name = ?", username).
-			Limit(1).
-			Select()
+		Limit(1).
+		Select()
 	if err != nil {
 		httpReturnError(w, "user is not existed")
 		panic(nil)
 	}
-	loginToken := LoginToken{UserID:user.ID}
+	loginToken := LoginToken{UserID: user.ID}
 	userExistErr := Db.Model(&loginToken).Select()
 	newExpiredTime := time.Now().Add(time.Minute * 10).Unix()
 	if userExistErr != nil || loginToken.SmsExpire < newExpiredTime {
@@ -134,7 +134,7 @@ var GetSmsToken = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 		// 设置10 min
 		loginToken.SmsExpire = newExpiredTime
 		loginToken.SmsToken = token
-		err = sendSMS("Your login sms code: " + token + ", valid in 10 minutes");
+		err = sendSMS("Your login sms code: " + token + ", valid in 10 minutes")
 		if err != nil {
 			httpReturnError(w, "sms error")
 			panic(nil)
@@ -181,14 +181,26 @@ var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 		UpdatedAt: time.Now().Unix(),
 		Tag:       post.Tag,
 		PostState: post.PostToIndex,
+		Thumbnail: post.HeroImgThumbnail,
 	}
 
 	err = Db.Insert(&article)
+	handleErr(err)
 	if err == nil {
 		httpReturnJSON(w, map[string]interface{}{
 			"success": true,
 		})
 	}
+})
+
+// GetInitialData 获取博客首页的渲染配置，比如，首页文章列表，首页配置，首页文章排行
+var GetInitialData = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	var err error
+	initialData := make(map[string]interface{})
+	initialData["rank"], err = DbGetArticlesRank(Db)
+	initialData["list"], _ = DbGetArticles(Db, 1)
+	handleErr(err)
+	httpReturnJSON(w, initialData)
 })
 
 // UpdateArticle 更新文章
@@ -216,11 +228,9 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 // GetArticles 获取所有文章的列表
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var articles []Article
-	err := Db.Model(&articles).Column("article.id", "article.title", "article.en_title", "article.tag", "article.created_at", "article.updated_at", "Author").Select()
+	articles, err := DbGetArticles(Db, 1)
 	handleErr(err)
-
 	httpReturnJSON(w, articles)
-	log.Print("App request!")
 })
 
 // GetArticleByID 获取ID文章
@@ -249,6 +259,9 @@ var GetArticleByTitle = func(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		httpReturnJSON(w, article)
+		// 更新文章访问量
+		article.Views++
+		Db.Model(&article).Update()
 		return
 	}
 	httpReturnError(w, "参数不全")
