@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { contentChange, setFormChange, getDashboardInitData, saveNewArticle } from '../actions'
 
 
+
 class Dashboard extends Component {
   constructor (props) {
     super(props);
@@ -27,6 +28,7 @@ class Dashboard extends Component {
   
   render() {
     const { contentChange, tag_options, form_value, formFieldChange, form_loading, show_success_msg } = this.props;
+    const thumbnailSrc = form_value.hero_img_thumbnail;
     return ( 
       <div>
         {
@@ -50,10 +52,24 @@ class Dashboard extends Component {
               placeholder='粘贴封面图片地址'
               onChange={formFieldChange}
               type='text' /> :
-            <img
-              alt="article hero"
-              style={{width: "100%"}}
-              src={form_value.hero_img} />
+              <div>
+                <img
+                  alt="article hero"
+                  style={{width: "100%"}}
+                  src={form_value.hero_img} />
+                {/* 缩略图 */}
+                {
+                  thumbnailSrc === "" ?
+                  null :
+                  <span>
+                    缩略图
+                    <img
+                      src={thumbnailSrc}
+                    />
+                  </span>
+
+                }
+              </div>
           }
           <Form.Input 
               name='head_title'
@@ -92,11 +108,11 @@ class Dashboard extends Component {
                 width={4} />
           </Form.Group>
           
-          <Button disabled={show_success_msg} color='blue' onClick={this.clickSaveArticle}>Submit</Button>
+          <Button disabled={show_success_msg} color='blue' onClick={this.clickSaveArticle}>发布</Button>
         </Form>
         <Message attached='bottom' warning>
           <Icon name='help' />
-          Ready to post...
+          若勾选“立即发布到主页”，则会将文章立即发布到首页网站。若不勾选，则保存并能在管理员控制台查看。
         </Message>
       </div>
     );

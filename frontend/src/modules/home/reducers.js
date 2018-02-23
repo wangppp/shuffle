@@ -7,9 +7,18 @@ const emptyForm = {
   head_title: '',
   en_title: '',
   hero_img: '',
+  hero_img_thumbnail: '',
   tag: '',
   post_to_index: true
 };
+
+function getThumbnailSrc(heroImgSrc) {
+  const split_src = heroImgSrc.split("upload/")
+  if (split_src.length === 2) {
+    return split_src[0] + "upload/t_media_lib_thumb/" + split_src[1]
+  }
+  return ""
+}
 
 // 初始化state， 在各自的 reducers 里
 export default (state = { 
@@ -87,6 +96,7 @@ export default (state = {
       } else {
         form_value[name] = value;
       }
+      form_value.hero_img_thumbnail = getThumbnailSrc(form_value.hero_img)
       return {
         ...state,
         form_value
