@@ -4,11 +4,16 @@ html, body{
     padding: 0;
     color: #36474f;
     font: 400 16px/24px Roboto,sans-serif;
+    /* font-family: "Noto Serif", Georgia, "Times New Roman", Times, serif; */
+    font-family: "Nato Sans", "Open Sans", 'Microsoft Yahei', sans-serif;
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
     -webkit-text-size-adjust: 100%;
     -ms-text-size-adjust: 100%;
     text-size-adjust: 100%;
+}
+* {
+    box-sizing: border-box;
 }
 #nprogress {
     pointer-events: none;

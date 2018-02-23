@@ -3,15 +3,11 @@ import styled from 'styled-components'
 
 const LayoutDiv = styled.div`
     width: 100%;
-    /* background-image: url('/static/imgs/sparks.jpeg'); */
-    min-height: 100vh;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
 `
 
 const MiddleLayout = styled.div`
-    max-width: 1350px;
+    padding: 0 20px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 `
@@ -24,7 +20,7 @@ const Layout = ({children, primary}) => (
 )
 
 export const PaddingGap = styled.div`
-    padding: 30px 0;
+    padding: 23px 0;
 `
 
 export { MiddleLayout }

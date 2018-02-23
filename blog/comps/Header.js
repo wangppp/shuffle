@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import styled, {css} from 'styled-components'
 import NProgress from 'nprogress'
-import Router from 'next/router'
+import Router, {withRouter} from 'next/router'
 
 // Router change with progress bar animation
 Router.onRouteChangeStart = url => {
@@ -59,30 +59,39 @@ const LinksWrapper = styled.nav`
     float: right;
 `
 
-const Header = ({primary}) => (
-    <HeaderDiv>
-        <Link href='/'>
-            <LogoDiv/>
+const ActiveLink = withRouter(({href, text, router}) => {
+    console.log(router.pathname, href)
+    const isPrimary = router.pathname === href || 
+        ((router.pathname === "/" || router.pathname === "/index") && (href === "" || href === "/"))
+    return (
+        <Link href={href}>
+            <StyledLink primary={isPrimary}>{text}</StyledLink>
         </Link>
-        <LinksWrapper>
-            <Link href='/'>
-                <StyledLink primary={true}>主页</StyledLink>
-            </Link>
-            <Link href='/about'>
-                <StyledLink>文章</StyledLink>
-            </Link>
-            <Link href='/about'>
-                <StyledLink>视频</StyledLink>
-            </Link>
-            <Link href='/about'>
-                <StyledLink>产品</StyledLink>
-            </Link>
-            <Link href='/about'>
-                <StyledLink>合作</StyledLink>
-            </Link>
+    )
+})
 
-        </LinksWrapper>
-    </HeaderDiv>
-)
+const Header = ({primary}) => {
+    return (
+        <HeaderDiv>
+            <Link href='/'>
+                <LogoDiv/>
+            </Link>
+            <LinksWrapper>
+                <ActiveLink
+                    text="主页"
+                    href="/"
+                />
+                {/* 文章
+                    视频
+                    产品 */}
+                <ActiveLink
+                    text="关于"
+                    href="/about"
+                />
+    
+            </LinksWrapper>
+        </HeaderDiv>
+    )
+}
 
 export default Header

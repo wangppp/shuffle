@@ -12,7 +12,12 @@ function getUrl(url) {
     return isServer ? `${serverBaseUrl}${url}` : `${clientBaseUrl}${url}`
 }
 
-export const getArticles = async function () {
+export const getInitialData = async function() {
+    const { data } = await fetch(getUrl('/initial-data'))
+    return data.data
+}
+
+export const getArticles = async function() {
     const { data } = await fetch(getUrl('/articles'))
     return data.data
 }

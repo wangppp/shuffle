@@ -20,19 +20,15 @@ const StyledHeroTitle = styled.div`
 const StyledHeroImage = styled.div`
   display: flex;
   flex: 1;
-  height: 375px;
-  max-width: 400px;
-  min-width: 300px;
-  & img {
-    max-width: 100%;
-    border: 0;
-  }
+  height: 50vh;
+  background-image: url('${({img}) => img}');
+  background-position: center;
+  background-size: cover;
 `
 
 const StyledHeroContent = styled.div`
   display: flex;
   justify-content: center;
-  padding: 20px 20px 0 20px;
 `
 const HeroTitle = () => (
     <StyledHeroTitle>
@@ -47,16 +43,13 @@ const HeroTitle = () => (
     </StyledHeroTitle>
 )
 
-const HeroImage = () => (
-    <StyledHeroImage>
-        <img src="/static/imgs/hero_img.png" alt=""/>
-    </StyledHeroImage>
+const HeroImage = (props) => (
+    <StyledHeroImage {...props} />
 )
 
-const HeroContent = () => (
+const HeroContent = ({img}) => (
     <StyledHeroContent>
-        <HeroTitle/>
-        <HeroImage/>
+        <HeroImage img={img} />
     </StyledHeroContent>
 )
 
