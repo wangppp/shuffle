@@ -62,7 +62,7 @@ const LinksWrapper = styled.nav`
 const ActiveLink = withRouter(({href, text, router}) => {
     console.log(router.pathname, href)
     const isPrimary = router.pathname === href || 
-        ((router.pathname === "/" || router.pathname === "/index") && (href === "" || href === "/"))
+        ((router.pathname === "/" || router.pathname === "index") && (href === "" || href === "/"))
     return (
         <Link href={href}>
             <StyledLink primary={isPrimary}>{text}</StyledLink>
