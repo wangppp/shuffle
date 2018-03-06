@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+
 	_ "github.com/lib/pq"
 	"github.com/wangppp/shuffle/api/service"
 )

@@ -6,13 +6,16 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
-	"strconv"
 	"math/rand"
+	"os"
+	"strconv"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
-	"os"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/kyokomi/cloudinary"
+	"golang.org/x/net/context"
 )
 
 func isAdmin(role int16) bool {
@@ -78,7 +81,7 @@ func sendSMS(msg string) error {
 	fmt.Println("service created")
 
 	params := &sns.PublishInput{
-		Message: aws.String(msg),
+		Message:     aws.String(msg),
 		PhoneNumber: aws.String(os.Getenv("GVOICE_NUMBER")),
 	}
 	resp, err := svc.Publish(params)
@@ -93,4 +96,11 @@ func sendSMS(msg string) error {
 	// Pretty-print the response data.
 	fmt.Println(resp)
 	return nil
+}
+
+//
+func getCloudinaryContext() (ctx context.Context) {
+	ctx = context.Background()
+	ctx = cloudinary.NewContext(ctx, os.Getenv("CLOUDINARY_URL"))
+	return ctx
 }

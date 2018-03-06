@@ -48,22 +48,30 @@ type Article struct {
 	Thumbnail string                 `json:"thumbnail"`
 }
 
-// DbGetArticles 获取 articles 文章列表
-func DbGetArticles(db *pg.DB, page int) (articles []Article, err error) {
+// DbGetArticles 获取 articles 文章列表 show; isFeed 是否是首页显示的文章流
+func DbGetArticles(db *pg.DB, page int, isFeed bool) (articles []Article, err error) {
 	if page <= 0 {
 		page = 1
 	}
 	limit := 10
 	offset := (page - 1) * limit
+	query := Db.Model(&articles).
+		Column("article.id", "article.title", "article.en_title", "article.tag", "article.created_at", "article.updated_at", "article.hero_img", "article.thumbnail", "Author").
+		Order("id DESC")
 
-	err = Db.Model(&articles).Column("article.id", "article.title", "article.en_title", "article.tag", "article.created_at", "article.updated_at", "article.hero_img", "article.thumbnail", "Author").Order("id DESC").Offset(offset).Select()
+	if isFeed {
+		query = query.Where("show_feed = ?", true).
+			Where("post_state = ?", true).
+			Offset(offset)
+	}
+	err = query.Select()
 	return articles, err
 }
 
 // DbGetArticlesRank 获取热门文章排行
 func DbGetArticlesRank(db *pg.DB) (articles []Article, err error) {
 	// 获取十条最热门文章
-	err = Db.Model(&articles).Column("article.id", "article.title", "article.en_title").Order("article.views DESC").Limit(10).Select()
+	err = Db.Model(&articles).Column("article.id", "article.title", "article.en_title").Order("article.views DESC").Where("show_feed = ?", true).Where("post_state = ?", true).Limit(10).Select()
 	return articles, err
 }
 

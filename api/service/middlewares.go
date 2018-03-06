@@ -12,6 +12,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/go-pg/pg/orm"
 	"github.com/gorilla/mux"
+	"github.com/kyokomi/cloudinary"
 	"github.com/wangppp/shuffle/api/config"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -110,7 +111,7 @@ func setCrossOriginSite(w http.ResponseWriter) {
 	}
 
 	w.Header().Add("Access-Control-Allow-Origin", crossSiteOrigin)
-	w.Header().Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
+	w.Header().Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control")
 	w.Header().Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS")
 }
 
@@ -198,7 +199,7 @@ var GetInitialData = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	var err error
 	initialData := make(map[string]interface{})
 	initialData["rank"], err = DbGetArticlesRank(Db)
-	initialData["list"], _ = DbGetArticles(Db, 1)
+	initialData["list"], _ = DbGetArticles(Db, 1, true)
 	handleErr(err)
 	httpReturnJSON(w, initialData)
 })
@@ -228,7 +229,7 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 // GetArticles 获取所有文章的列表
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var articles []Article
-	articles, err := DbGetArticles(Db, 1)
+	articles, err := DbGetArticles(Db, 1, false)
 	handleErr(err)
 	httpReturnJSON(w, articles)
 })
@@ -252,9 +253,14 @@ var GetArticleByTitle = func(w http.ResponseWriter, r *http.Request) {
 	enTitle := r.URL.Query().Get("en_title")
 	if enTitle != "" {
 		article := ViewArticle{}
-		err := Db.Model(&article).Where("en_title = ?", enTitle).Limit(1).Select()
+		// post_state == true 必须为发布状态
+		err := Db.Model(&article).
+			Where("en_title = ?", enTitle).
+			Where("post_state = ?", true).
+			Where("show_feed = ?", true).
+			Limit(1).Select()
 		if err != nil {
-			// handleErr(err)
+			handleErr(err)
 			httpReturnError(w, "文章不存在")
 			return
 		}
@@ -307,4 +313,30 @@ var GetDashboardInitialData = func(w http.ResponseWriter, r *http.Request) {
 	httpReturnJSON(w, map[string]interface{}{
 		"tag_options": dashboardData,
 	})
+}
+
+// UploadPicture 上传图片到Cloudinary 图床
+var UploadPicture = func(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(32 << 20)
+	file, handler, error := r.FormFile("file")
+	defer file.Close()
+	handleErr(error)
+	ctx := getCloudinaryContext()
+
+	// 上传图片到cloudinary 图床
+	error = cloudinary.UploadStaticImage(ctx, handler.Filename, file)
+	handleErr(error)
+
+	// 再获取下刚才刚上传的图片的地址
+	uploadedImgURL := cloudinary.ResourceURL(ctx, handler.Filename)
+	// 返回地址
+	httpReturnJSON(w, uploadedImgURL)
+}
+
+// GetPictureListFromCloudinary 获取图床的列表
+var GetPictureListFromCloudinary = func(w http.ResponseWriter, r *http.Request) {
+	ctx := getCloudinaryContext()
+	res, error := cloudinary.Resources(ctx)
+	handleErr(error)
+	httpReturnJSON(w, res)
 }

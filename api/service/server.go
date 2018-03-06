@@ -41,7 +41,9 @@ func initRoutes(mx *mux.Router) {
 	adminAPI.HandleFunc("/article", GetArticles).Methods("GET")
 	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticleByID).Methods("GET")
 	adminAPI.HandleFunc("/article/{id:[0-9]+}/update", UpdateArticle)
-
+	adminAPI.HandleFunc("/upload-picture", UploadPicture).Methods("POST")
+	// 获取所有的cloudinary 图片， 限量 2048
+	adminAPI.HandleFunc("/picture-list", GetPictureListFromCloudinary).Methods("GET")
 	adminAPI.HandleFunc("/dashbord_init", GetDashboardInitialData).Methods("GET")
 
 	// 可以将一组路由看成一个模块或控制器
