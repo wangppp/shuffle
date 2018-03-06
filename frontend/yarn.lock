@@ -1954,6 +1954,10 @@ draftjs-utils@^0.8.07:
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/draftjs-utils/-/draftjs-utils-0.8.8.tgz#5835daed95f59d3ee1f96fdcbbb9809772c86490"
 
+dropzone@^5.2.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/dropzone/-/dropzone-5.3.0.tgz#41c7a8a7cc6d237e3b28664e7a0719660d067edc"
+
 duplexer2@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/duplexer2/-/duplexer2-0.1.4.tgz#8b12dab878c0d69e3e7891051662a32fc6bddcc1"
@@ -2397,7 +2401,7 @@ express@^4.13.3:
     utils-merge "1.0.1"
     vary "~1.1.2"
 
-extend@~3.0.0:
+extend@^3.0.1, extend@~3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/extend/-/extend-3.0.1.tgz#a755ea7bc1adfcc5a31ce7e762dbaadc5e636444"
 
@@ -4953,9 +4957,9 @@ promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.6.0:
-  version "15.6.0"
-  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.0.tgz#ceaf083022fc46b4a35f69e13ef75aed0d639856"
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.6.0, prop-types@^15.6.1:
+  version "15.6.1"
+  resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.3.1"
@@ -5116,6 +5120,13 @@ react-draft-wysiwyg@^1.11.0:
     classnames "^2.2.5"
     draftjs-utils "^0.8.07"
     prop-types "^15.6.0"
+
+react-dropzone-component@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/react-dropzone-component/-/react-dropzone-component-3.1.2.tgz#3fd81e717f05ca03e5157028ddfed7467fed8c86"
+  dependencies:
+    dropzone "^5.2.0"
+    extend "^3.0.1"
 
 react-error-overlay@^3.0.0:
   version "3.0.0"

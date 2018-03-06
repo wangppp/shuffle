@@ -11,20 +11,22 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 // code splitting, 动态加载组件
 import asyncComponent from './utils/load';
 
-const Home = asyncComponent(() => import('./modules/home/views'));
 const Login = asyncComponent(() => import('./modules/login/view'));
-const ArticlePage = asyncComponent(() => import('./modules/articles/views'));
-const ArticleView = asyncComponent(() => import('./modules/articles/views/article_view'));
-const UpdateArticle = asyncComponent(() => import('./modules/articles/views/article_update'));
+const Home = loginRequiredWrapper(asyncComponent(() => import('./modules/home/views')));
+const ArticlePage = loginRequiredWrapper(asyncComponent(() => import('./modules/articles/views')));
+const PostArticlePage = loginRequiredWrapper(asyncComponent(() => import('./modules/home/views/post')));
+const ArticleView = loginRequiredWrapper(asyncComponent(() => import('./modules/articles/views/article_view')));
+const UpdateArticle = loginRequiredWrapper(asyncComponent(() => import('./modules/articles/views/article_update')));
+const MediaManage = loginRequiredWrapper(asyncComponent(() => import('./modules/media/views')));
 
 
-const Subscription = () => (
+const Subscription = loginRequiredWrapper(() => (
   <p>New subscribers here.</p>
-);
+));
 
-const Statistics = () => (
+const Statistics = loginRequiredWrapper(() => (
   <p>Subscribers statistics...</p>
-);
+));
 
 // login required wrapper 是否应该做成一个redux 的middleware
 const routes = [
@@ -34,27 +36,37 @@ const routes = [
   },
   {
     path: '/dashboard',
-    component: loginRequiredWrapper(Home),
+    component: Home,
     routes: [
+      // 发布文章
+      {
+        path: '/dashboard/post',
+        component: PostArticlePage
+      },
       {
         path: '/dashboard/articles',
-        component: loginRequiredWrapper(ArticlePage),
+        component: ArticlePage,
+      },
+      // 文章媒体图片管理
+      {
+        path: '/dashboard/media',
+        component: MediaManage
       },
       {
         path: '/dashboard/article/:id/update',
-        component: loginRequiredWrapper(UpdateArticle),
+        component: UpdateArticle,
       },
       {
         path: '/dashboard/article/:id',
-        component: loginRequiredWrapper(ArticleView),
+        component: ArticleView,
       },
       {
         path: '/dashboard/subscription',
-        component: loginRequiredWrapper(Subscription)
+        component: Subscription
       },
       {
         path: '/dashboard/statistics',
-        component: loginRequiredWrapper(Statistics)
+        component: Statistics
       },
     ]
   }

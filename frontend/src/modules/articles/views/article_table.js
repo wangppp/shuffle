@@ -3,15 +3,17 @@ import { Table, Icon, Button } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import { getTime } from '../../../utils/time'
 
-const RedirectButton = ({history, path, label}) => (
-  <Button onClick={() => {
-    history.push(path)
-  }}>
-      {label}
+const RedirectButton = ({history, path, icon, ...props}) => (
+  <Button
+    {...props}
+    icon={icon}
+    size="mini"
+    onClick={() => {
+      history.push(path)
+    }}
+  >
   </Button>
 )
-
-
 
 const ArticleRow = ({title, author, created_at, updated_at, id, history}) => (
     <Table.Row key={id}>
@@ -23,11 +25,21 @@ const ArticleRow = ({title, author, created_at, updated_at, id, history}) => (
       <Table.Cell>{getTime(updated_at)}</Table.Cell>
       <Table.Cell>
         {/* View Article */}
-        <RedirectButton history={history} label="View" path={{
+        <RedirectButton
+          history={history}
+          icon="eye"
+          color="blue"
+          path={{
             pathname: '/dashboard/article/' + id
-          }} />
+          }}
+        />
         {/* Update Article */}
-        <RedirectButton history={history} label="Update" path={`/dashboard/article/${id}/update`} />
+        <RedirectButton
+          history={history}
+          icon="edit"
+          color="green"
+          path={`/dashboard/article/${id}/update`}
+        />
       </Table.Cell>
     </Table.Row>
 )

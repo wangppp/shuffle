@@ -5,7 +5,7 @@ import {
 } from '../auth'
 
 
-const url_prefix = process.env.NODE_ENV !== 'production' ? '//localhost:5000/api/v1' : '/api/v1'
+export const url_prefix = process.env.NODE_ENV !== 'production' ? '//localhost:5000/api/v1' : '/api/v1'
 
 axios.interceptors.request.use(
   config => {
