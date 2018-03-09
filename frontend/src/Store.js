@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux'
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { reducers as HomeReducer } from "./modules/home"
 import { reducers as LoginReducer } from "./modules/login"
 import { reducers as ArticleReducer } from './modules/articles'
@@ -14,7 +14,11 @@ const reducer = combineReducers({
 
 // 引用
 const configureStore = () => {
-  const store = createStore(reducer, applyMiddleware(thunkMiddleware));
+  // Chrome Redux 插件
+  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const store = createStore(reducer, composeEnhancers(
+    applyMiddleware(thunkMiddleware)
+  ));
 
   if (process.env.NODE_ENV !== 'production') {
     if (module.hot) {

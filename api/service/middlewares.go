@@ -24,6 +24,7 @@ var customizeMiddleware = negroni.HandlerFunc(func(w http.ResponseWriter, r *htt
 	Db = GetPgOrm()
 	setCrossOriginSite(w)
 	// 手动调用下一个middleware
+	// 如果是 options 请求则直接返回 200
 	if r.Method != http.MethodOptions {
 		next(w, r)
 	} else {
@@ -38,6 +39,7 @@ var endMiddleWare = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	Db.Close()
 })
 
+// jwt 中间件，解析jwt并验证
 var jwtMiddleWare = negroni.HandlerFunc(jwtmiddleware.New(jwtmiddleware.Options{
 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 		return mySigningKey, nil
@@ -45,20 +47,54 @@ var jwtMiddleWare = negroni.HandlerFunc(jwtmiddleware.New(jwtmiddleware.Options{
 	SigningMethod: jwt.SigningMethodHS256,
 }).HandlerWithNext)
 
-// LoginHandler login
+// smsMiddleWare 验证是否携带了短信验证码中间件
+var smsMiddleWare = negroni.HandlerFunc(func(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	smsToken := r.FormValue("sms_token")
+	if len([]rune(smsToken)) != 6 {
+		httpReturnError(w, "smstoken error")
+		return
+	}
+	next(w, r)
+})
+
+// LoginHandler login执行登陆验证密码过程
 var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	// 登录校验
 	username := r.FormValue("username")
 	password := r.FormValue("password")
+	smsToken := r.FormValue("sms_token")
 
 	user := User{}
-	err := Db.Model(&user).Where("name = ?", username).
+	loginToken := LoginToken{}
+
+	err := Db.Model(&user).
+		Where("name = ?", username).
 		Limit(1).
 		Select()
 
 	if err != nil {
 		httpReturnError(w, "No user or invalid password!")
-		panic(nil)
+		return
+	}
+
+	err = Db.Model(&loginToken).
+		Where("user_id = ?", user.ID).
+		Limit(1).
+		Select()
+
+	if err != nil {
+		httpReturnError(w, "Please request sms token first!")
+		return
+	}
+
+	// 比对短信验证码是否相同或者过期
+	if loginToken.SmsExpire < time.Now().Unix() {
+		httpReturnError(w, "sms token is expired, please request again.")
+		return
+	}
+	if loginToken.SmsToken != smsToken {
+		httpReturnError(w, "sms token is not match!")
+		return
 	}
 
 	// 比对密码
@@ -76,10 +112,10 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 		true, generateJWTToken(&user),
 	}
 
-	httpReturnJSON(w, result)
+	httpReturnJSON(w, result, "")
 })
 
-// GetTokenHandlerAfterLogin 将穿进去的匿名函数转化为HandlerFunc 类型, 实际上是一个类型转化过程
+// GetTokenHandlerAfterLogin 将传进去的匿名函数转化为HandlerFunc 类型, 实际上是一个类型转化过程
 var GetTokenHandlerAfterLogin = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	// 本地登录使用用户名和密码哈哈,
 	// 如果数据库存储了用户名和密码，那么验证匹配，如果匹配则
@@ -126,38 +162,53 @@ var GetSmsToken = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 		httpReturnError(w, "user is not existed")
 		panic(nil)
 	}
+	// 存在用户token，若过期则生成新的token，更新，并发送短信，不过期则不发送
+	// 不存在则新增token， 再发送短信
 	loginToken := LoginToken{UserID: user.ID}
 	userExistErr := Db.Model(&loginToken).Select()
 	newExpiredTime := time.Now().Add(time.Minute * 10).Unix()
-	if userExistErr != nil || loginToken.SmsExpire < newExpiredTime {
+	if userExistErr != nil {
 		// 不存在token，新建token
 		token := getRandIntToken(6)
-		// 设置10 min
+		// 设置10 min后token过期
 		loginToken.SmsExpire = newExpiredTime
 		loginToken.SmsToken = token
+		// 插入新的token
+		err = Db.Insert(&loginToken)
+		if err != nil {
+			httpReturnError(w, "save token err")
+			return
+		}
+		// 发送短信
 		err = sendSMS("Your login sms code: " + token + ", valid in 10 minutes")
 		if err != nil {
 			httpReturnError(w, "sms error")
-			panic(nil)
+			return
 		}
-		// 如果存在了token record
-		if userExistErr == nil {
-			_, err = Db.Model(loginToken).Set("sms_token = ?sms_token").
-				Where("user_id = ?user_id").Update()
+	} else {
+		// token如果相对于现在已经过期
+		now := time.Now().Unix()
+		if loginToken.SmsExpire < now {
+			// 不存在token，新建token
+			token := getRandIntToken(6)
+			// 设置10 min
+			loginToken.SmsExpire = newExpiredTime
+			loginToken.SmsToken = token
+			// 更新新的token和过期时间
+			_, err = Db.Model(&loginToken).Update()
 			if err != nil {
-				httpReturnError(w, "update token err")
-				panic(err)
+				httpReturnError(w, "update error")
+				return
 			}
-		} else {
-			// 不存在则插入
-			err = Db.Insert(&loginToken)
+			// 发送短信
+			err = sendSMS("Your login sms code: " + token + ", valid in 10 minutes")
 			if err != nil {
-				httpReturnError(w, "save token err")
-				panic(nil)
+				httpReturnError(w, "sms error")
+				return
 			}
 		}
 	}
-	httpReturnJSON(w, "sms sent to your phone")
+	httpReturnJSON(w, nil, "sms sent to your phone")
 })
 
 // SaveArticle is successfully created!
@@ -188,9 +239,13 @@ var SaveArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	err = Db.Insert(&article)
 	handleErr(err)
 	if err == nil {
-		httpReturnJSON(w, map[string]interface{}{
-			"success": true,
-		})
+		httpReturnJSON(
+			w,
+			map[string]interface{}{
+				"success": true,
+			},
+			"文章保存成功",
+		)
 	}
 })
 
@@ -201,7 +256,7 @@ var GetInitialData = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	initialData["rank"], err = DbGetArticlesRank(Db)
 	initialData["list"], _ = DbGetArticles(Db, 1, true)
 	handleErr(err)
-	httpReturnJSON(w, initialData)
+	httpReturnJSON(w, initialData, "")
 })
 
 // UpdateArticle 更新文章
@@ -223,7 +278,7 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 
 	handleErr(err)
 
-	httpReturnJSON(w, jsonResponse{Status: true})
+	httpReturnJSON(w, jsonResponse{Status: true}, "更新文章成功")
 })
 
 // GetArticles 获取所有文章的列表
@@ -231,7 +286,7 @@ var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	var articles []Article
 	articles, err := DbGetArticles(Db, 1, false)
 	handleErr(err)
-	httpReturnJSON(w, articles)
+	httpReturnJSON(w, articles, "")
 })
 
 // GetArticleByID 获取ID文章
@@ -245,7 +300,7 @@ var GetArticleByID = func(w http.ResponseWriter, r *http.Request) {
 	}
 	err = Db.Select(&article)
 	handleErr(err)
-	httpReturnJSON(w, article)
+	httpReturnJSON(w, article, "")
 }
 
 // GetArticleByTitle 根据en_title 来获取文章
@@ -264,7 +319,7 @@ var GetArticleByTitle = func(w http.ResponseWriter, r *http.Request) {
 			httpReturnError(w, "文章不存在")
 			return
 		}
-		httpReturnJSON(w, article)
+		httpReturnJSON(w, article, "")
 		// 更新文章访问量
 		article.Views++
 		Db.Model(&article).Update()
@@ -310,9 +365,13 @@ var GetDashboardInitialData = func(w http.ResponseWriter, r *http.Request) {
 		{"1", "program", "编程"},
 		{"2", "literature", "文学"},
 	}
-	httpReturnJSON(w, map[string]interface{}{
-		"tag_options": dashboardData,
-	})
+	httpReturnJSON(
+		w,
+		map[string]interface{}{
+			"tag_options": dashboardData,
+		},
+		"",
+	)
 }
 
 // UploadPicture 上传图片到Cloudinary 图床
@@ -330,7 +389,7 @@ var UploadPicture = func(w http.ResponseWriter, r *http.Request) {
 	// 再获取下刚才刚上传的图片的地址
 	uploadedImgURL := cloudinary.ResourceURL(ctx, handler.Filename)
 	// 返回地址
-	httpReturnJSON(w, uploadedImgURL)
+	httpReturnJSON(w, uploadedImgURL, "")
 }
 
 // GetPictureListFromCloudinary 获取图床的列表
@@ -338,5 +397,5 @@ var GetPictureListFromCloudinary = func(w http.ResponseWriter, r *http.Request) 
 	ctx := getCloudinaryContext()
 	res, error := cloudinary.Resources(ctx)
 	handleErr(error)
-	httpReturnJSON(w, res)
+	httpReturnJSON(w, res, "")
 }

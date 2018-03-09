@@ -29,6 +29,7 @@ axios.interceptors.response.use(
         removeToken()
         window.location.reload()
       }
+      console.log(error.response.data.msg)
     } catch (err) {
       return Promise.reject(err);
     }

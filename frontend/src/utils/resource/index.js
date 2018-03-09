@@ -6,7 +6,7 @@ import { listChange } from '../../modules/media/actions';
 const RESOURCES_KEY = 'img_resources';
 
 function checkListIsSet() {
-  return Array.isArray(localStorage.getItem(RESOURCES_KEY));
+  return Array.isArray(JSON.parse(localStorage.getItem(RESOURCES_KEY)));
 }
 
 // 从完整的url获取缩略图url
@@ -21,13 +21,12 @@ export function getThumbnailSrc(imageUrl) {
 // 初始化localStorage里的数据
 export async function initImageList() {
   // 检查是否为空
-  console.log("123")
   if( !checkListIsSet() || getImageListByPage().length === 0 ) {
     setImageListToLocalStorage();
     if (isLogin) {
       const  { data } = await http.get("/admin/picture-list");
       setImageListToLocalStorage(data.data);
-      store.dispatch(listChange(data.data));
+      store.dispatch(listChange(data.data.slice(0, 10)));
     }
   }
 }
@@ -53,7 +52,7 @@ export function getImageListByPage(page = 1) {
   const start = pagesize * (page - 1);
   const end = pagesize * page;
   // 内存使用待优化
-  const list = JSON.parse(localStorage.getItem(RESOURCES_KEY));
+  const list = JSON.parse(localStorage.getItem(RESOURCES_KEY)) || [];
   return {
     list: list.slice(start, end),
     count: list.length

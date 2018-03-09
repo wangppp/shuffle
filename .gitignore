@@ -5,3 +5,4 @@
 api/tmp/runner-build
 .vscode
 api/*env
+.DS_Store

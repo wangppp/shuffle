@@ -8,7 +8,8 @@ import { getThumbnailSrc } from '../../../utils/resource';
 import { getTime } from '../../../utils/time';
 import 'dropzone/dist/min/dropzone.min.css';
 import { connect } from 'react-redux';
-import { pageChange } from '../actions'
+import { pageChange } from '../actions';
+import { initImageList } from '../../../utils/resource';
 
 const PaginationComponent = ({ active, total, ...props }) => (
   <Pagination
@@ -31,6 +32,7 @@ class UploadedPicturesView extends React.Component{
   handlePaginationChange = this.props.paginationChange
 
   componentDidMount() {
+    initImageList();
     console.log("pictures is loaded!")
   }
 

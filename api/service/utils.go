@@ -13,7 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sns"
-	"github.com/dgrijalva/jwt-go"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/kyokomi/cloudinary"
 	"golang.org/x/net/context"
 )
@@ -54,8 +54,8 @@ func httpReturnError(w http.ResponseWriter, message string) {
 }
 
 // 格式化返回结果
-func httpReturnJSON(w http.ResponseWriter, result interface{}) {
-	resultJSON, _ := json.Marshal(jsonResponse{result, true, ""})
+func httpReturnJSON(w http.ResponseWriter, result interface{}, message string) {
+	resultJSON, _ := json.Marshal(jsonResponse{result, true, message})
 
 	w.Header().Add("Content-Type", "application/json")
 	w.Write(resultJSON)
@@ -71,7 +71,6 @@ func getRandIntToken(n int) string {
 }
 
 // AWS sns 发送短信
-//
 func sendSMS(msg string) error {
 	fmt.Println("creating session")
 	sess := session.Must(session.NewSession())

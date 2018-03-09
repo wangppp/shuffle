@@ -12,8 +12,8 @@ const AuthBar = ({
    loginAsync,
    username,
    password,
-   setUserName,
-   setPassword,
+   sms_token,
+   setFormValue,
    requestSmsToken,
    is_sms_sent,
    loading
@@ -34,16 +34,18 @@ const AuthBar = ({
             size='large'
             className='attached fluid segment'>
             <Form.Input
-              onChange={setUserName}
+              onChange={setFormValue}
               value={username}
+              name="username"
               fluid
               icon='user'
               iconPosition='left'
               placeholder='User Name'
             />
             <Form.Input
-              onChange={setPassword}
+              onChange={setFormValue}
               value={password}
+              name="password"
               fluid
               icon='lock'
               iconPosition='left'
@@ -51,26 +53,29 @@ const AuthBar = ({
               type='password'
             />
 
-            {/*<Form.Group>*/}
-              {/*<Form.Input*/}
-                {/*fluid*/}
-                {/*icon='lock'*/}
-                {/*iconPosition='left'*/}
-                {/*placeholder='短信验证码'*/}
-                {/*width={10}*/}
-                {/*type='text' />*/}
-              {/*<Form.Button*/}
-                {/*fluid*/}
-                {/*disabled={is_sms_sent}*/}
-                {/*content={is_sms_sent ? "验证码已发送" : "请求验证码"}*/}
-                {/*onClick={() => {*/}
-                  {/*requestSmsToken({username, password})*/}
-                {/*}}*/}
-                {/*size="large"*/}
-                {/*width={6} />*/}
-            {/*</Form.Group>*/}
+            <Form.Group>
+              <Form.Input
+                fluid
+                icon='lock'
+                onChange={setFormValue}
+                value={sms_token}
+                name="sms_token"
+                iconPosition='left'
+                placeholder='短信验证码'
+                width={8}
+                type='text' />
+              <Form.Button
+                fluid
+                disabled={is_sms_sent}
+                content={is_sms_sent ? "验证码已发送" : "请求验证码"}
+                onClick={() => {
+                  requestSmsToken({username, password})
+                }}
+                size="large"
+                width={8} /> 
+            </Form.Group> 
             <Form.Button color='teal' fluid size='large' onClick={() => {
-              loginAsync({username, password})
+              loginAsync({username, password, sms_token})
             }}>Login</Form.Button>
           </Form>
           <Message attached="bottom" warning icon>
@@ -99,20 +104,23 @@ class Login extends Component {
   }
 }
 
-export const getLoginFormData = ({username, password}) => {
+export const getLoginFormData = ({username, password, sms_token}) => {
   let formData = new FormData();
   formData.append('username', username);
   formData.append('password', password);
+  formData.append('sms_token', sms_token);
   return formData;
 };
 
 function mapStateToProps(store) {
+  const loginStore = store.login;
   return {
-    username: store.login.username,
-    password: store.login.password,
+    username: loginStore.username,
+    password: loginStore.password,
+    sms_token: loginStore.sms_token,
     islogin: store.home.isLogin,
-    is_sms_sent: store.login.is_sms_sent,
-    loading: store.login.loading
+    is_sms_sent: loginStore.is_sms_sent,
+    loading: loginStore.loading
   };
 }
 
@@ -121,18 +129,15 @@ function mapDispatchToProps(dispatch) {
     requestSmsToken: async ({username, password}) => {
       dispatch(loginActions.requestSmsToken({username, password}));
     },
-    loginAsync: async ({username, password}) => {
-      const form = getLoginFormData({username, password});
+    loginAsync: async ({username, password, sms_token}) => {
+      const form = getLoginFormData({username, password, sms_token});
 
       const { data } = await http.post('/public/login', form);
       setToken(data.data.token);
       dispatch(homeActions.setLogin(true));
     },
-    setUserName: (e, {value}) => {
-      dispatch(loginActions.setUserName(value));
-    },
-    setPassword: (e, {value}) => {
-      dispatch(loginActions.setPassword(value));
+    setFormValue: (e, { name, value }) => {
+      dispatch(loginActions.setFormValue({name, value}));
     }
   }
 }

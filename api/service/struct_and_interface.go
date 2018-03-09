@@ -1,5 +1,6 @@
 package service
 
+// PostArticle 解析保存文章的结构体
 type PostArticle struct {
 	HeadTitle        string                 `json:"head_title"`
 	HeroImg          string                 `json:"hero_img"`
@@ -10,6 +11,7 @@ type PostArticle struct {
 	HeroImgThumbnail string                 `json:"hero_img_thumbnail"`
 }
 
+// PostUpdate 更新文章的结构体
 type PostUpdate struct {
 	ID      string                 `json:"id"`
 	Content map[string]interface{} `json:"content"`

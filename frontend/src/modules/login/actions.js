@@ -1,17 +1,15 @@
-import { SET_USERNAME, SET_PASSWORD, SET_SMS_SENT, SET_LOADING } from './actionTypes';
+import { SET_SMS_SENT, SET_LOADING, SET_FORM_VALUE } from './actionTypes';
 import http from "../../utils/http";
-import {actions as loginActions} from "./index";
-import {getLoginFormData} from './view';
+import { actions as loginActions } from "./index";
+import { getLoginFormData } from './view';
 
-export const setUserName = (uname) => ({
-  type: SET_USERNAME,
-  username: uname
-});
-
-export const setPassword = (passwd) => ({
-  type: SET_PASSWORD,
-  password: passwd
-});
+export const setFormValue = ({name, value}) => ({
+  type: SET_FORM_VALUE,
+  payload: {
+    name,
+    value
+  }
+})
 
 export const setSmsSentState = (state) => ({
   type: SET_SMS_SENT,
@@ -27,7 +25,9 @@ export const requestSmsToken = ({username, password}) => {
       if (data.status === true) {
         dispatch(loginActions.setSmsSentState(true));
         dispatch({type: SET_LOADING, loading: false});
+        dispatch(setSmsSentState(true));
       }
+      alert(data.msg)
     } catch(error) {
       dispatch({type: SET_LOADING, loading: false});
     }
