@@ -6,3 +6,5 @@ api/tmp/runner-build
 .vscode
 api/*env
 .DS_Store
+yarn-error.log
+/api/tmp/runner-build

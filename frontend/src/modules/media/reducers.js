@@ -1,5 +1,5 @@
 import { getImageListByPage, } from '../../utils/resource';
-import { CHANGE_IMAGE_LIST, CHANGE_PAGE, CHANGE_PAGE_STATE } from './actionTypes';
+import { CHANGE_IMAGE_LIST, CHANGE_PAGE, CHANGE_PAGE_STATE, CHANGE_SELECTED_IMG } from './actionTypes';
 
 const { list, count } = getImageListByPage();
 
@@ -10,6 +10,8 @@ export default (state = {
   count: count,
   // 分页
   page: 0,
+  // 当前选中的图片地址
+  selected_img: ''
 }, action) => {
   switch (action.type) {
     case CHANGE_IMAGE_LIST: {
@@ -30,6 +32,12 @@ export default (state = {
         ...state,
         page,
         list
+      }
+    }
+    case CHANGE_SELECTED_IMG: {
+      return {
+        ...state,
+        selected_img: action.selected_img
       }
     }
     default:

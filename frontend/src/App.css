@@ -159,3 +159,7 @@ div.filepicker {
   border-style: solid;
   border-color: white transparent transparent #920035;
 }
+.ui.cards>.card.card-active, .ui.cards>.card.card-active:hover {
+  border: 4px lightgreen solid;
+  box-sizing: border-box;
+}

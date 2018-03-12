@@ -1,7 +1,7 @@
 import http from '../http';
 import { isLogin } from '../auth';
 import { store } from '../../index';
-import { listChange } from '../../modules/media/actions';
+import { listChange,  } from '../../modules/media/actions';
 
 const RESOURCES_KEY = 'img_resources';
 
@@ -21,9 +21,12 @@ export function getThumbnailSrc(imageUrl) {
 // 初始化localStorage里的数据
 export async function initImageList() {
   // 检查是否为空
-  if( !checkListIsSet() || getImageListByPage().length === 0 ) {
+  const isSetListToLocalStorage = checkListIsSet();
+  const { list, count } = getImageListByPage();
+  console.log("chushihua tupian")
+  if( !isSetListToLocalStorage || list.length === 0 ) {
     setImageListToLocalStorage();
-    if (isLogin) {
+    if (isLogin()) {
       const  { data } = await http.get("/admin/picture-list");
       setImageListToLocalStorage(data.data);
       store.dispatch(listChange(data.data.slice(0, 10)));
@@ -31,14 +34,12 @@ export async function initImageList() {
   }
 }
 
+
 // 刷新localStorage里的数据
-export const getFreshLocalStorage = async () => {
-    if (isLogin) {
-      const  { data } = await http.get("/admin/picture-list");
-      setImageListToLocalStorage(data);
-      return data;
-    }
-    return [];
+export const refreshLocalStorage = async () => {
+  const  { data } = await http.get("/admin/picture-list");
+  setImageListToLocalStorage(data.data);
+  store.dispatch(listChange(data.data.slice(0, 10)));
 }
 
 // 将数据存储到localStorage

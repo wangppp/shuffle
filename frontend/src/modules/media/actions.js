@@ -1,4 +1,4 @@
-import { CHANGE_IMAGE_LIST, CHANGE_PAGE, CHANGE_PAGE_STATE } from './actionTypes';
+import { CHANGE_IMAGE_LIST, CHANGE_PAGE, CHANGE_PAGE_STATE, CHANGE_COUNT_AND_LIST, CHANGE_SELECTED_IMG } from './actionTypes';
 import { getImageListByPage } from '../../utils/resource';
 
 export function pageChange(page) {
@@ -18,3 +18,13 @@ export function listChange(list) {
         list
     }
 }
+
+export const listAndCountChange = ({ list, count }) => ({
+    type: CHANGE_COUNT_AND_LIST,
+    payload: { list, count }
+})
+
+export const selectedImgChange = selected_img => ({
+    type: CHANGE_SELECTED_IMG,
+    selected_img
+})
