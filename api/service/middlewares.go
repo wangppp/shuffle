@@ -195,7 +195,7 @@ var GetSmsToken = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 			loginToken.SmsExpire = newExpiredTime
 			loginToken.SmsToken = token
 			// 更新新的token和过期时间
-			_, err = Db.Model(&loginToken).Update()
+			_, err = Db.Model(&loginToken).WherePK().Update()
 			if err != nil {
 				httpReturnError(w, "update error")
 				return
