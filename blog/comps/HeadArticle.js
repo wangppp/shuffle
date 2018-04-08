@@ -6,6 +6,7 @@ import {getTime} from '../utils/time'
 
 const HeadArticle = ({article}) => (
     <StyledHeadArticle>
+        <h4>{article.updated_at ? getTime(article.updated_at) : '*'}</h4>
         <h2>
             <Link as={`/post/${article.en_title}`} href={`/post?title=${article.en_title}`}>
                 <a>{article.title}</a>
@@ -14,33 +15,94 @@ const HeadArticle = ({article}) => (
         <h3>{article.caption}</h3>
         <div className="post-info">
             <div className="post-comments-date">
-                <Clock />
-                <span className="date">{article.updated_at ? getTime(article.updated_at) : '*'}</span>
                 {/* <span className="divider"> / </span>
                 <a className="comments" href="#">
                     <CommentIcon />
                     1
                 </a> */}
             </div>
-            <img alt="" src="//res.cloudinary.com/dvr2kk33p/image/upload/c_scale,w_100/v1519369280/Vterm_dbiftu.png" className="avatar" height="64" width="64" />
             <p className="post-author-name">Admin</p>
         </div>
     </StyledHeadArticle>
 )
 
+const HeroArticle = ({article, post}) => (
+    <StyledHeroArticle>
+        <div className="title-box">
+            <Link as={`/post/${article.en_title}`} href={`/post?title=${article.en_title}`}>
+            <div className="c">
+                <h2>
+                    {article.updated_at ? getTime(article.updated_at) : '*'}
+                </h2>
+                <h1>{article.title}</h1>
+                {
+                    typeof post !== 'undefined' ? 
+                    null :
+                    <h2 className="view-post">View Post→</h2>
+                }
+            </div>
+            </Link>
+        </div>
+    </StyledHeroArticle>
+)
+
+const StyledHeroArticle = styled.div`
+    color: white;
+    /* display: flex; */
+    /* flex-direction: row; */
+    height: 100%;
+    justify-content: center;
+    & .title-box{
+        height: 100%;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        &>.c {
+            cursor:pointer;
+            h2{
+                font-family: Times, TimesNR, 'New Century Schoolbook',Georgia, 'New York', serif;
+                font-size: 24px;
+                line-height: 1.5em;
+                text-transform: none;
+                letter-spacing: 1px;
+                font-weight: 400;
+                font-style: italic;
+                color: #fff;
+                line-height: 1.125em;
+                margin-bottom: .75em;
+                text-align: center;
+            }
+            h1{
+                font-size: 68px;
+                font-family: Times, TimesNR, 'New Century Schoolbook',Georgia, 'New York', serif;
+                text-align: center;
+            }
+        }
+    }
+    
+`
+
 const StyledHeadArticle = styled.div`
     margin-top: 20px;
+    & h4{
+        font-size: 18px;
+        color: rgba(26,26,26,.4);
+        font-family: Times, TimesNR, 'New Century Schoolbook',Georgia, 'New York', serif;
+    }
     & h2 {
         &:hover{
             cursor: pointer;
         }
         margin: 0;
-        font-weight: 700;
         line-height: 1.2;
-        font-size: 42px;
+        font-size: 32px;
         margin: 0 auto;
         color: #2e4453;
         -webkit-font-smoothing: antialiased;
+        font-family: Times, TimesNR, 'New Century Schoolbook',Georgia, 'New York', serif;
     }
 
     & h3 {
@@ -60,7 +122,6 @@ const StyledHeadArticle = styled.div`
     & .post-info {
         padding-bottom: 20px;
         margin: 0 0 38px 0;
-        border-bottom: 1px solid rgba(200, 215, 225, 0.5);
     }
     & .post-comments-date {
         color: #87a6bc;
@@ -95,3 +156,5 @@ const StyledHeadArticle = styled.div`
 `
 
 export default HeadArticle
+
+export {HeroArticle}

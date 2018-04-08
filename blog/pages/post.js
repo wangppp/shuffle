@@ -4,6 +4,8 @@ import { getArticleByEnTitle } from '../utils/api'
 import { Component } from 'react'
 import Layout, { MiddleLayout } from '../comps/Layout'
 import styled from 'styled-components'
+import HeroContent from '../comps/HeroContent'
+import {HeroArticle} from '../comps/HeadArticle'
 import { getTime } from '../utils/time'
 
 const SmallTitle = styled.div`
@@ -29,14 +31,10 @@ class PostContent extends Component {
         const new_state = EditorState.createWithContent(convertFromRaw(article_content))
         return (
             <Layout primary>
-                <HeroImg heroImg={article_obj.hero_img} />
-                <MiddleLayout>
-                    <div>
-                        <h3>
-                            {article_obj.title}
-                        </h3>
-                        <SmallTitle>发布于 {getTime(article_obj.created_at)}</SmallTitle>
-                    </div>
+                <HeroContent img={article_obj.hero_img} post>
+                    <HeroArticle article={article_obj} post/>
+                </HeroContent>
+                <MiddleLayout style={{paddingTop: '80px'}}>
                     <Editor
                         editorKey="foo"
                         readOnly

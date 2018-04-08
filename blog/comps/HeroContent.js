@@ -1,55 +1,59 @@
 import styled from 'styled-components';
-import {Button} from './Button'
-
-const StyledHeroTitle = styled.div`
-  align-items: flex-start;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  & h2 {
-    color: #36474f;
-    font-size: 50px;
-    font-weight: lighter;
-    line-height: 56px;
-    max-width: 600px;
-    text-transform: none;
-  }
-`
+import {Button} from './Button';
+import Header from './Header';
 
 const StyledHeroImage = styled.div`
-  display: flex;
-  flex: 1;
-  height: 50vh;
+  height: ${({mini}) => {
+      if (mini === true) return '70vh'
+      return '100vh';
+  }};
+  max-height: 1200px;
+  width: 100%;
   background-image: url('${({img}) => img}');
   background-position: center;
   background-size: cover;
 `
 
 const StyledHeroContent = styled.div`
-  display: flex;
-  justify-content: center;
+  width: 100%;
+  position: relative;
+  &>.glass-overlay{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.3);
+    z-index: 99;
+  }
+  &>.hero-title{
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+  }
 `
-const HeroTitle = () => (
-    <StyledHeroTitle>
-        <h2>
-            Shuffle, 更快，更优雅的博客程序。
-        </h2>
-        <h3>利用shuffle创造激动人心的Blog</h3>
-        <div>
-            <Button primary>与销售人员联系</Button>
-            <Button>立即试用</Button>
-        </div>
-    </StyledHeroTitle>
-)
+
 
 const HeroImage = (props) => (
     <StyledHeroImage {...props} />
 )
 
-const HeroContent = ({img}) => (
+
+const HeroContent = ({img, children, post}) => (
     <StyledHeroContent>
-        <HeroImage img={img} />
+        <Header primary={true} />
+        <div className="glass-overlay" />
+        <div className="hero-title">
+            {children}
+        </div>
+        <HeroImage
+            mini={typeof post !== 'undefined' ? true : false}
+            img={img}
+        />
+
     </StyledHeroContent>
 )
 

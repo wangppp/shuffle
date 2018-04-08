@@ -9,10 +9,11 @@ const LayoutDiv = styled.div`
 `
 
 const MiddleLayout = styled.div`
-    padding: 0 20px;
-    max-width: 1200px;
+    padding: 20px 20px;
+    max-width: 1020px;
     margin-left: auto;
     margin-right: auto;
+    overflow: hidden;
 `
 
 export const PaddingGap = styled.div`
@@ -35,10 +36,9 @@ export default class Layout extends React.Component {
     }
 
     render() {
-        const { children, primary } = this.props
+        const { children } = this.props
         return (
             <LayoutDiv>
-                <Header primary={primary} />
                 {children}
             </LayoutDiv>
         )

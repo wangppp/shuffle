@@ -1,6 +1,6 @@
 import Layout, { MiddleLayout, PaddingGap } from '../comps/Layout'
 import HeroContent from '../comps/HeroContent'
-import HeadArticle from '../comps/HeadArticle'
+import HeadArticle, {HeroArticle} from '../comps/HeadArticle'
 import { getArticles, getInitialData } from '../utils/api'
 import styled from 'styled-components'
 import Link from 'next/link'
@@ -24,24 +24,22 @@ const PostLink = ({title, en_title}) => (
   )
 
 const Index = ({ articles, rankList }) => {
-    let HeroArticle = null
+    let FirstArticle = null
     let fakeHero = {title: "为社会主义建设添砖加瓦", en_title: "for-communist", caption: "牢记社会主义核心价值观，不忘使命, 砥砺前行。"}
     let left_articles = [];
     if (articles.length > 0) {
-        HeroArticle = articles[0]
+        FirstArticle = articles[0]
         left_articles = articles.slice(1)
     }
-    HeroArticle = HeroArticle ? HeroArticle : fakeHero
+    FirstArticle = FirstArticle ? FirstArticle : fakeHero
     return (
         <Layout>
-            <PaddingGap />
-            <HeroContent img={HeroArticle.hero_img} />
+            <HeroContent img={FirstArticle.hero_img}>
+                <HeroArticle article={FirstArticle} />
+            </HeroContent>
             <MiddleLayout>
-                <div>
-                    <HeadArticle article={HeroArticle} />
-                    <RightSider articles={left_articles} />
-                    <LeftSider rank={rankList} />
-                </div>
+                <RightSider articles={left_articles} />
+                {/* <LeftSider rank={rankList} /> */}
             </MiddleLayout>
         </Layout>
     )

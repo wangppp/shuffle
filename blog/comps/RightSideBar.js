@@ -3,6 +3,7 @@ import HeadArticle from './HeadArticle'
 
 const ListLayout = styled.div`
     position: relative;
+    margin: 100px 0;
     & .thumbernail {
         position: absolute;
         width: 30%;
@@ -11,10 +12,8 @@ const ListLayout = styled.div`
         float: left;
         background: #f3f6f8 url('/static/imgs/image-placeholder.svg') center center no-repeat;
         background-size: cover;
-        border: 1px solid rgba(200, 215, 225, 0.5);
     }
     & .article-info {
-        border-bottom: 1px solid #f3f6f8;
         margin-bottom: 30px;
         margin-left: calc(30% + 20px );
     }

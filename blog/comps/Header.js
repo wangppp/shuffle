@@ -15,13 +15,14 @@ Router.onRouteChangeError = () => NProgress.done()
 const HeaderDiv = styled.div`
     width: 100%;
     height: 46px;
-    background-color: #fefefe;
-    box-shadow: 0 0 4px rgba(0,0,0,.12), 0 4px 4px rgba(0,0,0,.1);
-    position: fixed;
+    padding: 20px;
+    background-color: transparent;
+    position: absolute;
     top: 0;
+    z-index:1000;
 `;
 const StyledLink = styled.a`
-    color: rgba(0,0,0,.54);
+    color: rgba(255,255,255,0.9);
     padding: 0 24px;
     font-weight: 400;
     font-size: 14px;
@@ -35,20 +36,20 @@ const StyledLink = styled.a`
     border-bottom: 2px solid transparent;
     box-sizing: border-box;
     &:hover {
-        color: rgba(0,0,0,.87);
+        color: rgba(255,255,255,1);
         cursor: pointer;
     }
     
     ${props => props.primary && css`
-        border-bottom-color: #0277bd;
-        color: #3c4367;
+        border-bottom-color: rgba(255,255,255,1);
+        color: rgba(255,255,255,1);
         font-weight: 500;
     `}
 `
 const LogoDiv = styled.div`
-    width: 246px;
-    height: 46px;
-    background-image: url('/static/imgs/logo-text.png');
+    width: 68px;
+    height: 50px;
+    background-image: url('/static/imgs/logo_.png');
     background-size: cover;
     display: inline-block;
     cursor: pointer;
