@@ -1,6 +1,8 @@
 package service
 
 import (
+	"net/http"
+
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 )
@@ -63,4 +65,9 @@ func initRoutes(mx *mux.Router) {
 		negroni.Wrap(publicAPI),
 		endMiddleWare,
 	))
+
+	// 所有未找到的404都返主页
+	mx.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "public/index.html")
+	})
 }

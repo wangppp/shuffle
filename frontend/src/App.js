@@ -87,6 +87,9 @@ class App extends Component {
               ))
             }
           </Switch>
+          <Route>
+            <Redirect to="/" />
+          </Route>
         </div>
       </Router>
     );
