@@ -53,10 +53,10 @@ func DbGetArticles(db *pg.DB, page int, isFeed bool) (articles []Article, err er
 	if page <= 0 {
 		page = 1
 	}
-	limit := 10
+	limit := 20
 	offset := (page - 1) * limit
 	query := Db.Model(&articles).
-		Column("article.id", "article.title", "article.en_title", "article.tag", "article.created_at", "article.updated_at", "article.hero_img", "article.thumbnail", "Author").
+		Column("article.id", "article.title", "article.en_title", "article.tag", "article.created_at", "article.updated_at", "article.hero_img", "article.thumbnail", "Author", "article.post_state").
 		Order("id DESC")
 
 	if isFeed {
@@ -91,6 +91,11 @@ type ViewArticle struct {
 	CreatedAt int64                  `json:"created_at"`
 	UpdatedAt int64                  `json:"updated_at"`
 	PostState bool                   `json:"post_state"`
+}
+
+// DownAndUpArticleBody 撤下和发布的post结构
+type DownAndUpArticleBody struct {
+	ID int64 `json:"id"`
 }
 
 // Db 全局的数据库链接

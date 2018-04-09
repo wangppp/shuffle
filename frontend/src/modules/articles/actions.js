@@ -48,3 +48,15 @@ export const updateExistArticle = (dispatch, id, content) => {
     }
 }
 
+export const downArticle = (dispatch, id) => {
+  return async () => {
+    console.log("123")
+    const {data} = await http.post('/admin/article/down', { id })
+    if (data.status === true) {
+      alert("撤下成功")
+      await dispatch(getArticleListFromServe(dispatch))
+      console.log("新文章加载完毕")
+    }
+  }
+}
+

@@ -45,6 +45,7 @@ func initRoutes(mx *mux.Router) {
 	adminAPI.HandleFunc("/article/{id:[0-9]+}", GetArticleByID).Methods("GET")
 	adminAPI.HandleFunc("/article/{id:[0-9]+}/update", UpdateArticle)
 	adminAPI.HandleFunc("/upload-picture", UploadPicture).Methods("POST")
+	adminAPI.HandleFunc("/article/down", DownArticle).Methods("POST")
 	// 获取所有的cloudinary 图片， 限量 2048
 	adminAPI.HandleFunc("/picture-list", GetPictureListFromCloudinary).Methods("GET")
 	adminAPI.HandleFunc("/dashbord_init", GetDashboardInitialData).Methods("GET")

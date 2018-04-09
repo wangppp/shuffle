@@ -79,6 +79,7 @@ const StyledHeroArticle = styled.div`
                 font-size: 68px;
                 font-family: Times, TimesNR, 'New Century Schoolbook',Georgia, 'New York', serif;
                 text-align: center;
+                line-height: 1.2em;
             }
         }
     }

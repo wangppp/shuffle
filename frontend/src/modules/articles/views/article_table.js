@@ -1,7 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Table, Icon, Button } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 import { getTime } from '../../../utils/time'
+import { downArticle } from '../actions'
 
 const RedirectButton = ({history, path, icon, ...props}) => (
   <Button
@@ -15,7 +17,16 @@ const RedirectButton = ({history, path, icon, ...props}) => (
   </Button>
 )
 
-const ArticleRow = ({title, author, created_at, updated_at, id, history}) => (
+const ArticleRow = ({
+    title,
+    author,
+    created_at,
+    updated_at,
+    id,
+    history,
+    post_state,
+    clickDownButton
+  }) => (
     <Table.Row key={id}>
       <Table.Cell collapsing>
         <Icon name='star' /> {title}
@@ -40,11 +51,35 @@ const ArticleRow = ({title, author, created_at, updated_at, id, history}) => (
           color="green"
           path={`/dashboard/article/${id}/update`}
         />
+        {
+          post_state === true ?
+          <Button
+            icon="delete"
+            size="mini"
+            color="red"
+            onClick={e => {
+              clickDownButton(id)
+            }}
+          /> :
+          <Button
+            icon="hand pointer"
+            size="mini"
+            color="green"
+          />
+        }
       </Table.Cell>
     </Table.Row>
 )
 
-const RouterWrapRow = withRouter(ArticleRow)
+function mapDispatchToProps(dispacth) {
+  return {
+    clickDownButton: (id) => {
+      dispacth(downArticle(dispacth, id))
+    }
+  }
+}
+
+const RouterWrapRow = withRouter(connect(null, mapDispatchToProps)(ArticleRow))
   
  const ArticleTable = ({ data }) => (
   <Table celled striped>

@@ -281,6 +281,26 @@ var UpdateArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request
 	httpReturnJSON(w, jsonResponse{Status: true}, "更新文章成功")
 })
 
+// DownArticle 将文章撤下
+var DownArticle = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	// 重复代码 TODO
+	decoder := json.NewDecoder(r.Body)
+	var post DownAndUpArticleBody
+	err := decoder.Decode(&post)
+	handleErr(err)
+	defer r.Body.Close()
+
+	article := Article{
+		ID:        post.ID,
+		PostState: false,
+	}
+
+	_, err = Db.Model(&article).Set("post_state = ?post_state").Where("id = ?id").Update()
+	handleErr(err)
+
+	httpReturnJSON(w, jsonResponse{Status: true}, "撤下成功")
+})
+
 // GetArticles 获取所有文章的列表
 var GetArticles = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	var articles []Article
